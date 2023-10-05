@@ -1,0 +1,135 @@
+﻿@page "/"
+@using Car_Rental.Business.Classes;
+@using Car_Rental.Common.Classes;
+@using Car_Rental.Common.Interfaces;
+@using Car_Rental.Common.Enums;
+@inject BookingProcessor bp
+
+<PageTitle>Car Rental Assignment</PageTitle>
+
+<h1>Car Rental Assignment</h1>
+
+<div class="row">
+
+    <h4 class="fw-bold" style="padding: 0;">Customers</h4>
+    <table class="table table-hover table-bordered">
+        <thead>
+            <tr class="table-dark">
+                <th>SSN</th>
+                <th>Last Name</th>
+                <th>First Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var c in bp.GetCustomers())
+            {
+                <tr>
+                    <th>@c.SocialSecurityNumber</th>
+                    <td>@c.LastName</td>
+                    <td>@c.FirstName</td>
+                </tr>  
+            }
+        </tbody>
+    </table>
+</div>
+<br />
+<div class="row">
+    <h4 class="fw-bold" style="padding: 0;">Vehicles</h4>
+    <table class="table table-hover border">
+        <thead>
+            <tr class="table-dark">
+                <th>RegNo</th>
+                <th>Make</th>
+                <th>Odometer</th>
+                <th>Cost Km</th>
+                <th>Vehicle Type</th>
+                <th>$ Day</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var v in bp.GetVehicles())
+            {
+                <tr>
+                    <th>@v.RegNo</th>
+                    <td>@v.CarMake</td>
+                    <td>@v.OdoMeter</td>
+                    <td>@v.CostKm</td>
+                    <td>@v.VType</td>
+                    <td>@v.CostDay</td>
+                    @if(v.VStatus == VehicleStatuses.Available)
+                        {
+                        <td><span class="badge bg-dark rounded-pill">@v.VStatus</span></td>
+                    }
+                    else
+                    {
+                        <td><span class="badge bg-danger rounded-pill">@v.VStatus</span></td>
+                    }
+                </tr> 
+            }
+        </tbody>
+    </table>
+</div>
+<br />
+<div class="row">
+    <h4 class="fw-bold" style="padding: 0;">Bookings</h4>
+    <table class="table table-hover table-bordered">
+        <thead>
+            <tr class="table-dark">
+                <th>RegNo</th>
+                <th>Customer</th>
+                <th>Km Rented</th>
+                <th>Km Returned</th>
+                <th>Rented</th>
+                <th>Returned</th>
+                <th>Cost</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var b in bp.GetBookings())
+            {
+                <tr>
+                    <th>@b.RegNo</th>
+                    <td>@b.Customer</td>
+                    <td>@b.KmRent</td>
+                    <td>@b.KmReturned</td>
+                    <td>@(b.StartRent?.ToShortDateString())</td>
+                    <td>@(b.EndRent?.ToShortDateString())</td>
+                    
+                    @foreach(var v in bp.GetVehicles())
+                    {
+                        @if (v.RegNo == b.RegNo)
+                        {
+                            <td>@b.GetCost(v, b)</td>
+                        }
+                    }
+                    @if (b.Status == BookingStatuses.Closed)
+                    {
+                        <td><span class="badge bg-success rounded-pill">@b.Status</span></td>
+                    }
+                    else
+                    {
+                        <td><span class="badge bg-danger rounded-pill">@b.Status</span></td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<!--
+
+<form>
+    <div class="form-group">
+        <label for="customerName">Name:</label>
+        <input type="text" class="form-control" id="customerName"  />
+    </div>
+    <div class="form-group">
+        <label for="customerSSN">Social Security Number:</label>
+        <input type="text" class="form-control" id="customerSSN"  />
+    </div>
+    <button type="button" class="btn btn-primary">Register</button>
+</form>
+
+-->
