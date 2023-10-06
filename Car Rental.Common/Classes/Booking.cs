@@ -24,21 +24,19 @@ public class Booking : IBooking
         Status = status;
     }
 
-    public double? GetCost(IVehicle vehicle, IBooking booking)
+    public double? GetCost(IVehicle vehicle)
     {
-        if (booking.StartRent == null || booking.EndRent == null || booking.KmReturned == null)
+        if (this.StartRent == null || this.EndRent == null || this.KmReturned == null)
         {
             return null;
         }
 
-        DateTime startDate = booking.StartRent.Value;
-        DateTime endDate = booking.EndRent.Value;
-
-        double daysDifference = (endDate - startDate).TotalDays;
-        return daysDifference * vehicle.CostDay + booking.KmReturned.Value * vehicle.CostKm;
+        return (this.EndRent.Value - this.StartRent.Value).TotalDays * vehicle.CostDay + this.KmReturned.Value * vehicle.CostKm;
     }
 
 }
+
+
 
 
 

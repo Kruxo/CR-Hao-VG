@@ -11,6 +11,9 @@ public interface IBooking
     public DateTime? StartRent { get; set; }
     public DateTime? EndRent { get; set; }
     public BookingStatuses Status { get; set; }
-    public double? GetCost(IVehicle vehicle, IBooking booking);
+    public double? GetCost(IVehicle vehicle);
+
+
+    //public IVehicle vehicle1 { get; set; }
 
 }

@@ -24,7 +24,7 @@ public class CollectionData : IData
         _vehicles.Add(new Motorcycle("COW999", "Yamaha", 5000, 3, VehicleTypes.Motorcycle, 50, (VehicleStatuses)2));
 
         _bookings.Add(new Booking("RIP666", "Nguyen Hao (123456)", 1000.0, null, DateTime.Today.AddDays(-3), null, (BookingStatuses)1));
-        _bookings.Add(new Booking("LOL777", "Nguyen Pao (654321)", 4000.0, 4000.0, DateTime.Today.AddDays(-4), DateTime.Today, (BookingStatuses)2));
+        _bookings.Add(new Booking("LOL777", "Nguyen Pao (654321)", 4000.0, 4000.0, DateTime.Today.AddDays(-1), DateTime.Today, (BookingStatuses)2));
 
     }
     public IEnumerable<IPerson> GetPersons() => _persons;
