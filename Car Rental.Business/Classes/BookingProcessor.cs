@@ -2,6 +2,7 @@
 using Car_Rental.Common.Enums;
 using Car_Rental.Common.Interfaces;
 using Car_Rental.Data.Interfaces;
+using System;
 
 namespace Car_Rental.Business.Classes;
 
@@ -19,8 +20,27 @@ public class BookingProcessor
 
         return customers;
     }
-
     public IEnumerable<IVehicle> GetVehicles(VehicleStatuses status = default) => _db.GetVehicles(status);
     public IEnumerable<IBooking> GetBookings() => _db.GetBookings();
 
+    /*
+    public IBooking GetBooking(int vehicleId) {}
+    public IPerson? GetPerson(string ssn) { }
+    public IVehicle? GetVehicle(int vehicleId) { }
+    public IVehicle? GetVehicle(string regNo) { }
+    public async Task<IBooking> RentVehicle(int vehicleId, int customerId)
+    {
+        // Använd Task.Delay för att simulera tiden det tar att hämta data från ett API.
+    }
+    public IBooking ReturnVehicle(int vehicleId, double ditance) { }
+    public void AddVehicle(string make, string registrationNumber, double odometer, double costKm, VehicleStatuses status, VehicleTypes type)
+    { }
+    public void AddCustomer(string socialSecurityNumber, string firstName, string lastName)
+    { }
+    // Calling Default Interface Methods
+    public string[] VehicleStatusNames => _db.VehicleStatusNames;
+    public string[] VehicleTypeNames => _db.VehicleTypeNames;
+    public VehicleTypes GetVehicleType(string name) => _db.GetVehicleType(name);
+
+    */
 }

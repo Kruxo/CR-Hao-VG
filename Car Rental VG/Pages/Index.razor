@@ -12,15 +12,23 @@
 <div class="row">
 
     <h4 class="fw-bold" style="padding: 0;">Customers</h4>
-    <table class="table table-hover table-bordered">
+    <table class="table table-hover border">
         <thead>
             <tr class="table-dark">
                 <th>SSN</th>
                 <th>Last Name</th>
                 <th>First Name</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
+
+            <tr>
+                <td><input placeholder="SSN"/></td>
+                <td><input placeholder="Last Name" /></td>
+                <td><input placeholder="First Name" /><button>Add</button></td>
+            </tr>
+
             @foreach(var c in bp.GetCustomers())
             {
                 <tr>
@@ -44,10 +52,32 @@
                 <th>Cost Km</th>
                 <th>Vehicle Type</th>
                 <th>$ Day</th>
+                <th>Action</th>
+                <th></th>
                 <th>Status</th>
             </tr>
         </thead>
         <tbody>
+
+            <tr>
+                <td><input placeholder="RegNo" /></td>
+                <td><input placeholder="Make" /></td>
+                <td><input placeholder="0" /></td>
+                <td><input placeholder="0" /></td>
+                <td>
+                    <select class="form-select form-select-sm" aria-label=".form-select-sm example">
+                        <option selected value="1">@VehicleTypes.Convertible</option>
+                        <option value="2">@VehicleTypes.Bus</option>
+                        <option value="3">@VehicleTypes.Minivan</option>
+                        <option value="4">@VehicleTypes.Motorcycle</option>
+                    </select>
+                </td>
+                <td></td>
+                <td><button>Add</button></td>
+                <td></td>
+                <td></td>
+            </tr>
+
             @foreach(var v in bp.GetVehicles())
             {
                 <tr>
@@ -57,14 +87,24 @@
                     <td>@v.CostKm</td>
                     <td>@v.VType</td>
                     <td>@v.CostDay</td>
+                    <td>
+                        <select class="form-select form-select-sm" aria-label=".form-select-sm example">
+                            <option selected>Action</option>
+                            <option value="1">One</option>
+                            <option value="2">Two</option>
+                            <option value="3">Three</option>
+                        </select>
+                    </td>
+                    <td><button>Rent</button></td>
                     @if(v.VStatus == VehicleStatuses.Available)
-                        {
+                    {
                         <td><span class="badge bg-dark rounded-pill">@v.VStatus</span></td>
                     }
                     else
                     {
                         <td><span class="badge bg-danger rounded-pill">@v.VStatus</span></td>
                     }
+                    <!-- <td><span class="badge bg-warning rounded-pill">Processing</span></td> -->
                 </tr> 
             }
         </tbody>
@@ -73,7 +113,7 @@
 <br />
 <div class="row">
     <h4 class="fw-bold" style="padding: 0;">Bookings</h4>
-    <table class="table table-hover table-bordered">
+    <table class="table table-hover border">
         <thead>
             <tr class="table-dark">
                 <th>RegNo</th>
@@ -118,19 +158,6 @@
     </table>
 </div>
 
-<!--
 
-<form>
-    <div class="form-group">
-        <label for="customerName">Name:</label>
-        <input type="text" class="form-control" id="customerName"  />
-    </div>
-    <div class="form-group">
-        <label for="customerSSN">Social Security Number:</label>
-        <input type="text" class="form-control" id="customerSSN"  />
-    </div>
-    <button type="button" class="btn btn-primary">Register</button>
-</form>
 
--->
-
+<!--  Glöm ej felhantering ifall användaren lägger till en person eller bil på fel sätt ex tomma inputs -->
