@@ -22,11 +22,11 @@
             </tr>
         </thead>
         <tbody>
-
+             
             <tr>
-                <td><input placeholder="SSN"/></td>
-                <td><input placeholder="Last Name" /></td>
-                <td><input placeholder="First Name" /><button>Add</button></td>
+                <td><input type="text" placeholder="SSN"/></td>
+                <td><input type="text" placeholder="Last Name" /></td>
+                <td><input type="text" placeholder="First Name" /><button class="btn btm-sm btn-outline-success">Add</button></td>
             </tr>
 
             @foreach(var c in bp.GetCustomers())
@@ -60,10 +60,10 @@
         <tbody>
 
             <tr>
-                <td><input placeholder="RegNo" /></td>
-                <td><input placeholder="Make" /></td>
-                <td><input placeholder="0" /></td>
-                <td><input placeholder="0" /></td>
+                <td><input type="text" placeholder="RegNo" /></td>
+                <td><input type="text" placeholder="Make" /></td>
+                <td><input type="number" placeholder="0" /></td>
+                <td><input type="number" placeholder="0" /></td>
                 <td>
                     <select class="form-select form-select-sm" aria-label=".form-select-sm example">
                         <option selected value="1">@VehicleTypes.Convertible</option>
