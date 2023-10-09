@@ -4,6 +4,7 @@ namespace Car_Rental.Common.Interfaces;
 
 public interface IVehicle
 {
+    public int Id { get; set; }
     public string RegNo { get; set; }
     public string CarMake { get; set; }
     public int OdoMeter { get; set; }

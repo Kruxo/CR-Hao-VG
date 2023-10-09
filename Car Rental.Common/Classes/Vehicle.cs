@@ -3,9 +3,26 @@ using Car_Rental.Common.Interfaces;
 
 namespace Car_Rental.Common.Classes;
 
-public class Vehicle //här ska vi använda inheritance bland annat
+public class Vehicle : IVehicle 
 {
-    //Allt som är gemensamt för fordon finns i Vehicle
-    //Car och Motorcycle ska alltså ärva från denna Vehicle klassen
-    //
+    public int Id { get; set; }
+    public string RegNo { get; set; }
+    public string CarMake { get; set; }
+    public int OdoMeter { get; set; }
+    public double CostKm { get; set; }
+    public VehicleTypes VType { get; set; }
+    public double CostDay { get; set; }
+    public VehicleStatuses VStatus { get; set; }
+
+    public Vehicle(string regNo, string carMake, int odoMeter, int costKm, VehicleTypes vType, int costDay, VehicleStatuses vStatus)
+    {
+        RegNo = regNo;
+        CarMake = carMake;
+        OdoMeter = odoMeter;
+        CostKm = costKm;
+        VType = vType;
+        CostDay = costDay;
+        VStatus = vStatus;
+    }
+
 }

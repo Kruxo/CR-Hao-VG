@@ -21,8 +21,7 @@ public interface IData
     //Get retunerar flera stycken, Single bara en, Add ska lägga till readonly listorna
     //tex Add(Booking), Single(Person), Get(Person) koden ej korrekt bara demonstration 
 
-    /*
-    List<T> Get<T>(Expression<Func<T, bool>>? expression);
+    /*List<T> Get<T>(Expression<Func<T, bool>>? expression);
     T? Single<T>(Expression<Func<T, bool>>? expression);
     public void Add<T>(T item);
     int NextVehicleId { get; }
@@ -30,10 +29,10 @@ public interface IData
     int NextBookingId { get; }
     IBooking RentVehicle(int vehicleId, int customerId);
     IBooking ReturnVehicle(int vehicleId);
-    
-    // Default Interface Methods
-    public string[] VehicleStatusNames => //Retunera enum konstanterna
-    public string[] VehicleTypeNames => //Retunera enum konstanterna
-    public VehicleTypes GetVehicleType(string name) => // Retunera en enum konstants värde med hjälp av konstantens namn
+    */
+    /* // Default Interface Methods
+    public string[] VehicleStatusNames(); //Retunera enum konstanterna
+    public string[] VehicleTypeNames(); //Retunera enum konstanterna
+    public VehicleTypes GetVehicleType(string name); // Retunera en enum konstants värde med hjälp av konstantens namn
     */
 }

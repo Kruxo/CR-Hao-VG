@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Car_Rental.Common.Extensions;
 
-namespace Car_Rental.Common.Extensions;
-
-public class VehicleExtensions
+public static class CollectionExtensions
 {
 }
+
+//minst en extensionmetod så denna kanske ej behövs

@@ -144,7 +144,7 @@
                             <td>@b.GetCost(v)</td>
                         }
                     }
-                    @if (b.Status == BookingStatuses.Closed)
+                    @if (b.Status == VehicleStatuses.Available) 
                     {
                         <td><span class="badge bg-success rounded-pill">@b.Status</span></td>
                     }
