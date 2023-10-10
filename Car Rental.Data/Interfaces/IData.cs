@@ -6,9 +6,30 @@ namespace Car_Rental.Data.Interfaces;
 
 public interface IData
 {
+    List<T> Get<T>(Expression<Func<T, bool>>? expression);
+    T? Single<T>(Expression<Func<T, bool>>? expression);
+    void Add<T>(T item);
+    int NextVehicleId { get; }
+    int NextPersonId { get; }
+    int NextBookingId { get; }
+    IBooking RentVehicle(int vehicleId, int customerId);
+    IBooking ReturnVehicle(int vehicleId);
+
+    // Default Interface Methods
+    public string[] VehicleStatusNames => Enum.GetNames(typeof(VehicleStatuses));
+    public string[] VehicleTypeNames => Enum.GetNames(typeof(VehicleTypes));
+    public VehicleTypes GetVehicleType(string name);
+
+    public IEnumerable<IBooking> GetBookings();
+
+    List<IVehicle> Vehicles { get; }
+    List<IPerson> Persons { get; } 
+
+    /*
     public IEnumerable<IPerson> GetPersons();
     public IEnumerable<IVehicle> GetVehicles(VehicleStatuses status = default);
     public IEnumerable<IBooking> GetBookings();
+    */
 
     //vi behöver RentVehicle() och ReturnVehicle()
 
@@ -20,19 +41,4 @@ public interface IData
 
     //Get retunerar flera stycken, Single bara en, Add ska lägga till readonly listorna
     //tex Add(Booking), Single(Person), Get(Person) koden ej korrekt bara demonstration 
-
-    /*List<T> Get<T>(Expression<Func<T, bool>>? expression);
-    T? Single<T>(Expression<Func<T, bool>>? expression);
-    public void Add<T>(T item);
-    int NextVehicleId { get; }
-    int NextPersonId { get; }
-    int NextBookingId { get; }
-    IBooking RentVehicle(int vehicleId, int customerId);
-    IBooking ReturnVehicle(int vehicleId);
-    */
-    /* // Default Interface Methods
-    public string[] VehicleStatusNames(); //Retunera enum konstanterna
-    public string[] VehicleTypeNames(); //Retunera enum konstanterna
-    public VehicleTypes GetVehicleType(string name); // Retunera en enum konstants värde med hjälp av konstantens namn
-    */
 }

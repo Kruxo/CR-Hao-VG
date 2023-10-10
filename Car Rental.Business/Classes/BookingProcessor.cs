@@ -7,22 +7,118 @@ using System.Reflection.Metadata.Ecma335;
 
 namespace Car_Rental.Business.Classes;
 
+
 public class BookingProcessor
 {
     private readonly IData _db;
 
     public BookingProcessor(IData db) => _db = db;
 
+    public IEnumerable<IBooking> GetBookings()
+    {
+        return _db.GetBookings();
+    }
+
     public IEnumerable<Customer> GetCustomers()
     {
-        var allPersons = _db.GetPersons();
-
-        var customers = allPersons.OfType<Customer>(); //filtrerar och konverterat till customer objekt
-
-        return customers;
+        return _db.Get<IPerson>(p => p is Customer).OfType<Customer>();
     }
-    public IEnumerable<IVehicle> GetVehicles(VehicleStatuses status = default) => _db.GetVehicles(status);
-    public IEnumerable<IBooking> GetBookings() => _db.GetBookings();
+
+    public IEnumerable<IVehicle> GetVehicles(VehicleStatuses status = default)
+    {
+        return _db.Get<IVehicle>(v => status == default || v.VStatus == status);
+    }
+
+    public IPerson? GetPerson(string ssn)
+    {
+        return _db.Single<IPerson>(p => p is Customer && (p as Customer).SocialSecurityNumber.ToString() == ssn);
+    }
+
+    public IVehicle? GetVehicle(int vehicleId)
+    {
+        return _db.Single<IVehicle>(v => v.Id == vehicleId);
+    }
+
+    public IVehicle? GetVehicle(string regNo)
+    {
+        return _db.Single<IVehicle>(v => v.RegNo == regNo);
+    }
+
+    public IBooking RentVehicle(int vehicleId, int customerId)
+    {
+        return RentVehicleAsync(vehicleId, customerId).Result;
+    }
+
+    public async Task<IBooking> RentVehicleAsync(int vehicleId, int customerId)
+    {
+        await Task.Delay(2000); // Simulerar att vi hämtar data från ett API med 2s fördröjning
+
+        return RentVehicle(vehicleId, customerId);
+    }
+
+    public IBooking ReturnVehicle(int vehicleId, double distance)
+    {
+        // Implement your logic for returning a vehicle
+        // You may want to calculate the final cost based on the distance
+        // and update the booking and vehicle status accordingly
+        return _db.ReturnVehicle(vehicleId);
+    }
+
+    public void AddVehicle(string make, string registrationNumber, double odometer, double costKm, VehicleStatuses status, VehicleTypes type)
+    {
+
+        var newVehicle = new Vehicle( //skapar en instance av klassen Vehicle
+            registrationNumber,
+            make,
+            (int)odometer,
+            (int)costKm,
+            type,
+            0, // Value?
+            status
+        );
+
+        _db.Vehicles.Add(newVehicle);
+    }
+
+
+    public void AddCustomer(int socialSecurityNumber, string firstName, string lastName)
+    {
+        var newCustomer = new Customer(
+            socialSecurityNumber,
+            firstName,
+            lastName
+        );
+
+        _db.Persons.Add(newCustomer);
+
+    }
+
+    // Calling Default Interface Methods??
+    public string[] VehicleStatusNames => _db.VehicleStatusNames;
+    public string[] VehicleTypeNames => _db.VehicleTypeNames;
+    public VehicleTypes GetVehicleType(string name) => _db.GetVehicleType(name);
+}
+
+/*
+public class BookingProcessor
+{
+    private readonly IData _db;
+
+    public BookingProcessor(IData db) => _db = db;
+
+
+
+    public IEnumerable<Customer> GetCustomers()
+     {
+         var allPersons = _db.GetPersons();
+
+         var customers = allPersons.OfType<Customer>(); //filtrerar och konverterat till customer objekt
+
+         return customers;
+     }
+     public IEnumerable<IVehicle> GetVehicles(VehicleStatuses status = default) => _db.GetVehicles(status);
+     public IEnumerable<IBooking> GetBookings() => _db.GetBookings();
+
 
     /*
 
@@ -52,6 +148,6 @@ public class BookingProcessor
     public string[] VehicleTypeNames => _db.VehicleTypeNames;
     public VehicleTypes GetVehicleType(string name) => _db.GetVehicleType(name);
 
-    */
+   
 
-}
+}*/
