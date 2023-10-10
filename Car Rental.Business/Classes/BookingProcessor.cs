@@ -58,10 +58,29 @@ public class BookingProcessor
 
     public IBooking ReturnVehicle(int vehicleId, double distance)
     {
-        // Implement your logic for returning a vehicle
-        // You may want to calculate the final cost based on the distance
-        // and update the booking and vehicle status accordingly
-        return _db.ReturnVehicle(vehicleId);
+        var vehicle = _db.GetVehicles().FirstOrDefault(v => v.RegNo == vehicleId.ToString());
+        var booking = _db.GetBookings().FirstOrDefault(b => b.RegNo == vehicleId.ToString());
+
+        if (vehicle == null || booking == null)
+        {
+            // Handle the case where the vehicle or booking is not found
+            return null;
+        }
+
+        if (booking.KmReturned.HasValue)
+        {
+            // Handle the case where the booking has already been returned
+            return null;
+        }
+
+        booking.KmReturned = distance;
+
+        // Use the already obtained vehicle object to calculate the final cost
+        double finalCost = (double)booking.GetCost(vehicle);
+
+        // You may want to update other booking or vehicle details here
+
+        return booking;
     }
 
     public void AddVehicle(string make, string registrationNumber, double odometer, double costKm, VehicleStatuses status, VehicleTypes type)

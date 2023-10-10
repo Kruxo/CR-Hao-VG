@@ -213,7 +213,7 @@ public class CollectionData : IData
     public string[] VehicleTypeNames => Enum.GetNames(typeof(VehicleTypes));
 
     public IEnumerable<IBooking> GetBookings() => _bookings;
-
+    public IEnumerable<IVehicle> GetVehicles(VehicleStatuses status = default) => _vehicles;
     public List<IVehicle> Vehicles => _vehicles;
     public List<IPerson> Persons => _persons;
 

@@ -24,10 +24,21 @@
         <tbody>
              
             <tr>
-                <td><input type="text" placeholder="SSN"/></td>
+                <td><input type="text" placeholder="SSN" /></td>
                 <td><input type="text" placeholder="Last Name" /></td>
                 <td><input type="text" placeholder="First Name" /><button class="btn btm-sm btn-outline-success">Add</button></td>
             </tr>
+            <!-- 
+            <tr>
+                <td><input type="text" placeholder="SSN" value="@customer.SocialSecurityNumber" /></td>
+                <td><input type="text" placeholder="Last Name" value="@customer.LastName" /></td>
+                <td>
+                    <input type="text" placeholder="First Name" value="@customer.FirstName" />
+                    <form @onsubmit="@(e => { bp.AddCustomer(customer.SocialSecurityNumber, customer.LastName, customer.FirstName); return false; })">
+                        <button type="submit" class="btn btm-sm btn-outline-success">Add</button>
+                    </form>
+                </td>
+            </tr>-->
 
             @foreach(var c in bp.GetCustomers())
             {
@@ -89,10 +100,11 @@
                     <td>@v.CostDay</td>
                     <td>
                         <select class="form-select form-select-sm" aria-label=".form-select-sm example">
-                            <option selected>Action</option>
-                            <option value="1">One</option>
-                            <option value="2">Two</option>
-                            <option value="3">Three</option>
+                            <option selected>Select Customer</option>
+                                @foreach (var customer in bp.GetCustomers())
+                                {
+                                <option value="@customer.Id">@customer.FirstName @customer.LastName</option>
+                                }
                         </select>
                     </td>
                     <td><button>Rent</button></td>
