@@ -23,9 +23,9 @@
         <tbody>
              
             <tr>
-                <td><input type="text" placeholder="SSN" /></td>
-                <td><input type="text" placeholder="Last Name" /></td>
-                <td><input type="text" placeholder="First Name" /><button class="btn btm-sm btn-outline-success">Add</button></td>
+                <td><input type="text" placeholder="SSN" @bind="bp.SSN"/></td>
+                <td><input type="text" placeholder="Last Name" @bind="bp.LName" /></td>
+                <td><input type="text" placeholder="First Name" @bind="bp.FName" /><button class="btn btm-sm btn-outline-success" @onclick="(() => bp.AddCustomer())">Add</button></td>
             </tr>
 
             @foreach(var c in bp.GetCustomers())
@@ -93,9 +93,9 @@
                             }
                         </select>
                     </td>
-                    <td><button>Rent</button></td>
+                    <td><button type="button" @onclick="() => bp.RentVehicle(v.RegNo, selectedCustomerId)">Rent Vehicle</button></td>
 
-                    @if(v.VStatus == VehicleStatuses.Available)
+                    @if (v.VStatus == VehicleStatuses.Available)
                     {
                         <td><span class="badge bg-dark rounded-pill">@v.VStatus</span></td>
                     }
@@ -104,7 +104,7 @@
                         <td><span class="badge bg-danger rounded-pill">@v.VStatus</span></td>
                     }
 
-                </tr> 
+                </tr>
             }
         </tbody>
     </table>

@@ -21,13 +21,10 @@ public class BookingProcessor
     public double CostKm { get; set; }
     public string VehicleType { get; set; }
 
-    private int selectedCustomerId;
-    public void SetSelectedCustomerId(int customerId)
-    {
-        selectedCustomerId = customerId;
-    }
+    public int SSN { get; set; }
+    public string LName { get; set; }
+    public string FName { get; set; }
 
-    public int SelectedCustomerId => selectedCustomerId;
     public IEnumerable<IBooking> GetBookings()
     {
         return _db.Get<IBooking>(null);
@@ -38,15 +35,17 @@ public class BookingProcessor
         return _db.Get<IPerson>(p => p is Customer).OfType<Customer>();
     }
 
+
+
     public IEnumerable<IVehicle> GetVehicles(VehicleStatuses status = default)
     {
         return _db.Get<IVehicle>(v => status == default || v.VStatus == status);
     }
 
-    /*public List<IVehicle> GetAllVehicles()
+    public List<IVehicle> GetAllVehicles()
     {
         return _db.Get<IVehicle>(null);
-    }*/
+    }
 
     public IPerson? GetPerson(string ssn)
     {
@@ -135,7 +134,7 @@ public class BookingProcessor
         );
 
         // Assuming _db has a method Add<T> to add items
-        _db.Add(newVehicle);
+        _db.Add(newVehicle as IVehicle);
 
         // Optionally, reset properties
         Make = string.Empty;
@@ -145,18 +144,21 @@ public class BookingProcessor
         VehicleType = string.Empty;
     }
 
-
-    public void AddCustomer(int socialSecurityNumber, string firstName, string lastName)
+    public void AddCustomer()
     {
         var newCustomer = new Customer(
-            socialSecurityNumber,
-            firstName,
-            lastName
+            SSN,
+            LName,
+            FName
         );
 
-        _db.Add(newCustomer);
+        _db.Add(newCustomer as IPerson);
 
+        SSN = 0;
+        LName = string.Empty;
+        FName = string.Empty;
     }
+
 
     // Calling Default Interface Methods??
     public string[] VehicleStatusNames => _db.VehicleStatusNames;
@@ -164,55 +166,3 @@ public class BookingProcessor
     public VehicleTypes GetVehicleType(string name) => _db.GetVehicleType(name);
 }
 
-/*
-public class BookingProcessor
-{
-    private readonly IData _db;
-
-    public BookingProcessor(IData db) => _db = db;
-
-
-
-    public IEnumerable<Customer> GetCustomers()
-     {
-         var allPersons = _db.GetPersons();
-
-         var customers = allPersons.OfType<Customer>(); //filtrerar och konverterat till customer objekt
-
-         return customers;
-     }
-     public IEnumerable<IVehicle> GetVehicles(VehicleStatuses status = default) => _db.GetVehicles(status);
-     public IEnumerable<IBooking> GetBookings() => _db.GetBookings();
-
-
-    /*
-
-    //alla getmetoder här ska anropa Get() från datalagret
-    public IBooking GetBooking(int vehicleId) {}
-    public IPerson? GetPerson(string ssn) { }
-    public IVehicle? GetVehicle(int vehicleId) { }
-    public IVehicle? GetVehicle(string regNo) { } 
-
-    public async Task<IBooking> RentVehicle(int vehicleId, int customerId)
-    {
-        await Task.Delay(2000);
-
-        IBooking bookingDelay = 
-
-        return bookingDelay;
-
-    }
-    
-    public IBooking ReturnVehicle(int vehicleId, double distance) { }
-    public void AddVehicle(string make, string registrationNumber, double odometer, double costKm, VehicleStatuses status, VehicleTypes type)
-    { }
-    public void AddCustomer(string socialSecurityNumber, string firstName, string lastName)
-    { }
-    // Calling Default Interface Methods
-    public string[] VehicleStatusNames => _db.VehicleStatusNames;
-    public string[] VehicleTypeNames => _db.VehicleTypeNames;
-    public VehicleTypes GetVehicleType(string name) => _db.GetVehicleType(name);
-
-   
-
-}*/

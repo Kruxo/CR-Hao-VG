@@ -15,9 +15,4 @@ public class Customer : IPerson
         LastName = lastName;
         FirstName = firstName;
     }
-
-   /* public string FullName
-    {
-        get { return $"{LastName} {FirstName} {SocialSecurityNumber}"; }
-    } */
 }

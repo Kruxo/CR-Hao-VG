@@ -220,9 +220,7 @@ public class CollectionData : IData
     public IEnumerable<IPerson> GetPersons() => _persons; //dessa ska bort o bytas mot generiska metoder
     public IEnumerable<IVehicle> GetVehicles(VehicleStatuses status = default) => _vehicles;
     public IEnumerable<IBooking> GetBookings() => _bookings;
-    */
-
-    /*
+   
     List<T> Get<T>(Expression<Func<T, bool>>? expression);
     T? Single<T>(Expression<Func<T, bool>>? expression);
     public void Add<T>(T item);
