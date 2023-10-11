@@ -117,6 +117,12 @@ public class BookingProcessor
 
     public void AddVehicle()
     {
+        // Ensure VehicleType is set, defaulting to Convertible if not
+        if (string.IsNullOrEmpty(VehicleType))
+        {
+            VehicleType = VehicleTypes.Convertible.ToString();
+        }
+
         // Use the properties to add a new vehicle
         var newVehicle = new Vehicle(
             RegistrationNumber,
@@ -137,7 +143,6 @@ public class BookingProcessor
         Odometer = 0;
         CostKm = 0;
         VehicleType = string.Empty;
-
     }
 
 
