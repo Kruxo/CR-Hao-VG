@@ -1,6 +1,7 @@
 ﻿using Car_Rental.Common.Classes;
 using Car_Rental.Common.Enums;
 using Car_Rental.Common.Interfaces;
+using Car_Rental.Data.Classes;
 using Car_Rental.Data.Interfaces;
 using System;
 using System.Reflection.Metadata.Ecma335;
@@ -14,9 +15,22 @@ public class BookingProcessor
 
     public BookingProcessor(IData db) => _db = db;
 
+    public string Make { get; set; }
+    public string RegistrationNumber { get; set; }
+    public double Odometer { get; set; }
+    public double CostKm { get; set; }
+    public string VehicleType { get; set; }
+
+    private int selectedCustomerId;
+    public void SetSelectedCustomerId(int customerId)
+    {
+        selectedCustomerId = customerId;
+    }
+
+    public int SelectedCustomerId => selectedCustomerId;
     public IEnumerable<IBooking> GetBookings()
     {
-        return _db.GetBookings();
+        return _db.Get<IBooking>(null);
     }
 
     public IEnumerable<Customer> GetCustomers()
@@ -28,6 +42,11 @@ public class BookingProcessor
     {
         return _db.Get<IVehicle>(v => status == default || v.VStatus == status);
     }
+
+    /*public List<IVehicle> GetAllVehicles()
+    {
+        return _db.Get<IVehicle>(null);
+    }*/
 
     public IPerson? GetPerson(string ssn)
     {
@@ -43,60 +62,82 @@ public class BookingProcessor
     {
         return _db.Single<IVehicle>(v => v.RegNo == regNo);
     }
-
-    public IBooking RentVehicle(int vehicleId, int customerId)
+    /*public IBooking RentVehicle(string vehicleId, int customerId)
     {
-        return RentVehicleAsync(vehicleId, customerId).Result;
+        var booking = _db.RentVehicle(vehicleId, customerId);
+
+        if (booking != null)
+        {
+            // Update the booking status or any other necessary information
+            booking.Status = VehicleStatuses.Booked;
+            // ... any other updates ...
+
+            // Add the newly created booking to the list
+            _db.Bookings.Add(booking); // Assuming you have a Bookings list in your data storage
+        }
+
+        return booking;
+    }*/
+    public IBooking RentVehicle(string vehicleId, int customerId)
+    {
+        Task.Delay(2000).Wait(); // Simulate a delay
+
+        return _db.RentVehicle(int.Parse(vehicleId), customerId);
     }
 
-    public async Task<IBooking> RentVehicleAsync(int vehicleId, int customerId)
+    /*public async Task<IBooking> RentVehicleAsync(int vehicleId, int customerId)
     {
         await Task.Delay(2000); // Simulerar att vi hämtar data från ett API med 2s fördröjning
 
         return RentVehicle(vehicleId, customerId);
-    }
+    }*/
+
 
     public IBooking ReturnVehicle(int vehicleId, double distance)
     {
-        var vehicle = _db.GetVehicles().FirstOrDefault(v => v.RegNo == vehicleId.ToString());
-        var booking = _db.GetBookings().FirstOrDefault(b => b.RegNo == vehicleId.ToString());
+        var vehicle = _db.Get<IVehicle>(v => v.RegNo == vehicleId.ToString()).FirstOrDefault();
+        var booking = _db.Get<IBooking>(b => b.RegNo == vehicleId.ToString()).FirstOrDefault();
 
         if (vehicle == null || booking == null)
         {
-            // Handle the case where the vehicle or booking is not found
-            return null;
+            return null; // Handle the case where the vehicle or booking is not found
         }
 
         if (booking.KmReturned.HasValue)
         {
-            // Handle the case where the booking has already been returned
-            return null;
+            return null; // Handle the case where the booking has already been returned
         }
 
         booking.KmReturned = distance;
 
-        // Use the already obtained vehicle object to calculate the final cost
-        double finalCost = (double)booking.GetCost(vehicle);
-
-        // You may want to update other booking or vehicle details here
+        double finalCost = (double)booking.GetCost(vehicle);  // Use the already obtained vehicle object to calculate the final cost
 
         return booking;
     }
 
-    public void AddVehicle(string make, string registrationNumber, double odometer, double costKm, VehicleStatuses status, VehicleTypes type)
+    public void AddVehicle()
     {
-
-        var newVehicle = new Vehicle( //skapar en instance av klassen Vehicle
-            registrationNumber,
-            make,
-            (int)odometer,
-            (int)costKm,
-            type,
+        // Use the properties to add a new vehicle
+        var newVehicle = new Vehicle(
+            RegistrationNumber,
+            Make,
+            (int)Odometer,
+            (int)CostKm,
+            Enum.Parse<VehicleTypes>(VehicleType),
             0, // Value?
-            status
+            VehicleStatuses.Available
         );
 
-        _db.Vehicles.Add(newVehicle);
+        // Assuming _db has a method Add<T> to add items
+        _db.Add(newVehicle);
+
+        // Optionally, reset properties
+        Make = string.Empty;
+        RegistrationNumber = string.Empty;
+        Odometer = 0;
+        CostKm = 0;
+        VehicleType = string.Empty;
+
     }
 
 
@@ -108,7 +149,7 @@ public class BookingProcessor
             lastName
         );
 
-        _db.Persons.Add(newCustomer);
+        _db.Add(newCustomer);
 
     }
 

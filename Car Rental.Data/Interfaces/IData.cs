@@ -20,10 +20,12 @@ public interface IData
     public string[] VehicleTypeNames => Enum.GetNames(typeof(VehicleTypes));
     public VehicleTypes GetVehicleType(string name);
 
-    public IEnumerable<IBooking> GetBookings();
-    public IEnumerable<IVehicle> GetVehicles(VehicleStatuses status = default); 
-    List<IVehicle> Vehicles { get; }
-    List<IPerson> Persons { get; } 
+
+
+
+
+
+
 
     /*
     public IEnumerable<IPerson> GetPersons();

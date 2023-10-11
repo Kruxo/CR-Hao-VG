@@ -124,7 +124,7 @@ public class CollectionData : IData
         }
         else
         {
-            // Handle other types if needed
+            
         }
     }
 
@@ -212,10 +212,9 @@ public class CollectionData : IData
     public string[] VehicleStatusNames => Enum.GetNames(typeof(VehicleStatuses));
     public string[] VehicleTypeNames => Enum.GetNames(typeof(VehicleTypes));
 
-    public IEnumerable<IBooking> GetBookings() => _bookings;
-    public IEnumerable<IVehicle> GetVehicles(VehicleStatuses status = default) => _vehicles;
-    public List<IVehicle> Vehicles => _vehicles;
-    public List<IPerson> Persons => _persons;
+
+
+
 
     /*
     public IEnumerable<IPerson> GetPersons() => _persons; //dessa ska bort o bytas mot generiska metoder

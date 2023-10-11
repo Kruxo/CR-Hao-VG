@@ -28,17 +28,6 @@
                 <td><input type="text" placeholder="Last Name" /></td>
                 <td><input type="text" placeholder="First Name" /><button class="btn btm-sm btn-outline-success">Add</button></td>
             </tr>
-            <!-- 
-            <tr>
-                <td><input type="text" placeholder="SSN" value="@customer.SocialSecurityNumber" /></td>
-                <td><input type="text" placeholder="Last Name" value="@customer.LastName" /></td>
-                <td>
-                    <input type="text" placeholder="First Name" value="@customer.FirstName" />
-                    <form @onsubmit="@(e => { bp.AddCustomer(customer.SocialSecurityNumber, customer.LastName, customer.FirstName); return false; })">
-                        <button type="submit" class="btn btm-sm btn-outline-success">Add</button>
-                    </form>
-                </td>
-            </tr>-->
 
             @foreach(var c in bp.GetCustomers())
             {
@@ -69,26 +58,24 @@
             </tr>
         </thead>
         <tbody>
-
             <tr>
-                <td><input type="text" placeholder="RegNo" /></td>
-                <td><input type="text" placeholder="Make" /></td>
-                <td><input type="number" placeholder="0" /></td>
-                <td><input type="number" placeholder="0" /></td>
+                <td><input type="text" placeholder="RegNo" @bind="bp.RegistrationNumber" /></td>
+                <td><input type="text" placeholder="Make" @bind="bp.Make" /></td>
+                <td><input type="number" placeholder="0" @bind="bp.Odometer" /></td>
+                <td><input type="number" placeholder="0" @bind="bp.CostKm" /></td>
                 <td>
-                    <select class="form-select form-select-sm" aria-label=".form-select-sm example">
-                        <option selected value="1">@VehicleTypes.Convertible</option>
-                        <option value="2">@VehicleTypes.Bus</option>
-                        <option value="3">@VehicleTypes.Minivan</option>
-                        <option value="4">@VehicleTypes.Motorcycle</option>
+                    <select class="form-select form-select-sm" aria-label=".form-select-sm example" @bind="bp.VehicleType">
+                        <option value="Convertible">@VehicleTypes.Convertible</option>
+                        <option value="Bus">@VehicleTypes.Bus</option>
+                        <option value="Minivan">@VehicleTypes.Minivan</option>
+                        <option value="Motorcycle">@VehicleTypes.Motorcycle</option>
                     </select>
                 </td>
                 <td></td>
-                <td><button>Add</button></td>
+                <td><button type="button" @onclick="(() => bp.AddVehicle())">Add Vehicle</button></td>
                 <td></td>
                 <td></td>
             </tr>
-
             @foreach(var v in bp.GetVehicles())
             {
                 <tr>
@@ -101,13 +88,14 @@
                     <td>
                         <select class="form-select form-select-sm" aria-label=".form-select-sm example">
                             <option selected>Select Customer</option>
-                                @foreach (var customer in bp.GetCustomers())
-                                {
+                            @foreach (var customer in bp.GetCustomers())
+                            {
                                 <option value="@customer.Id">@customer.FirstName @customer.LastName</option>
-                                }
+                            }
                         </select>
                     </td>
                     <td><button>Rent</button></td>
+
                     @if(v.VStatus == VehicleStatuses.Available)
                     {
                         <td><span class="badge bg-dark rounded-pill">@v.VStatus</span></td>
@@ -116,7 +104,7 @@
                     {
                         <td><span class="badge bg-danger rounded-pill">@v.VStatus</span></td>
                     }
-                    <!-- <td><span class="badge bg-warning rounded-pill">Processing</span></td> -->
+
                 </tr> 
             }
         </tbody>
