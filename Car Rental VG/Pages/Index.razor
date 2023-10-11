@@ -5,9 +5,18 @@
 @using Car_Rental.Common.Enums;
 @inject BookingProcessor bp
 
+<link rel="stylesheet" href="css/Index.css" />
+
 <PageTitle>Car Rental Assignment</PageTitle>
 
 <h1>Car Rental Assignment</h1>
+
+<!-- @if (!string.IsNullOrWhiteSpace(bp.message))
+{
+    <div class="alert alert-danger">
+        @bp.Message
+    </div>
+} Gör en exception metod-->
 
 <div class="row">
     <h4 class="fw-bold" style="padding: 0;">Customers</h4>
@@ -23,9 +32,9 @@
         <tbody>
              
             <tr>
-                <td><input type="text" placeholder="SSN" @bind="bp.SSN"/></td>
+                <td><input type="number" placeholder="SSN" @bind="bp.SSN" /></td>
                 <td><input type="text" placeholder="Last Name" @bind="bp.LName" /></td>
-                <td><input type="text" placeholder="First Name" @bind="bp.FName" /><button class="btn btm-sm btn-outline-success" @onclick="(() => bp.AddCustomer())">Add</button></td>
+                <td><input type="text" placeholder="First Name" @bind="bp.FName" /><button class="bn632-hover bn22" type="button" @onclick="(() => bp.AddCustomer())">Add</button></td>
             </tr>
 
             @foreach(var c in bp.GetCustomers())
@@ -71,9 +80,18 @@
                     </select>
                 </td>
                 <td></td>
-                <td><button type="button" @onclick="(() => bp.AddVehicle())">Add Vehicle</button></td>
+                <td><button class="bn632-hover bn22" type="button" @onclick="(() => bp.AddVehicle())" disabled="@bp.Delay">Add</button></td>
                 <td></td>
-                <td></td>
+                @if (bp.Delay)
+                {
+                    <td>
+                        <button class="btn btn-sm btn-warning" type="button" disabled>
+                            <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                            <span role="status">Processing...</span>
+                        </button>
+                    </td>
+                }
+                else {<td></td>}
             </tr>
             @foreach(var v in bp.GetVehicles())
             {
@@ -85,25 +103,30 @@
                     <td>@v.VType</td>
                     <td>@v.CostDay</td>
                     <td>
-                        <select class="form-select form-select-sm" aria-label=".form-select-sm example" @bind="bp.selectedCustomerId">
-                            <option selected>Select Customer</option>
+                        <select class="form-select form-select-sm" aria-label=".form-select-sm example" @bind="bp.selectedCustomerId" disabled="@bp.Delay">
+                            <option disabled selected>Select Customer</option>
                             @foreach (var customer in bp.GetCustomers())
                             {
-                                <option value="@customer.Id">@customer.LastName @customer.FirstName</option>
+                                <option value="@customer.Id" >@customer.LastName @customer.FirstName</option>
                             }
                         </select>
                     </td>
-                    <td><button type="button" @onclick="(() => bp.RentVehicle(v.Id, bp.selectedCustomerId))">Rent</button></td>
 
-                    @if(v.VStatus == VehicleStatuses.Available)
+                    @if (v.VStatus == VehicleStatuses.Available)
                     {
-                        <td><span class="badge bg-dark rounded-pill">@v.VStatus</span></td>
+                        <td>
+                            <button class="bn3637 bn37" type="button" @onclick="(() => bp.RentVehicle(v.Id, bp.selectedCustomerId))" disabled="@bp.Delay">Rent</button>
+                        </td>
                     }
                     else
                     {
-                        <td><span class="badge bg-danger rounded-pill">@v.VStatus</span></td>
+                        <td>
+                            <button class="bn3637 bn38" type="button" @onclick="(() => bp.ReturnVehicle(v.Id, bp.selectedCustomerId))" disabled="@bp.Delay">Return</button>
+                        </td>
                     }
-
+                    <td>
+                        <span class="badge bg-@(v.VStatus == VehicleStatuses.Available ? "dark" : "danger") rounded-pill">@v.VStatus</span>
+                    </td>
                 </tr> 
             }
         </tbody>
@@ -143,13 +166,14 @@
                             <td>@b.GetCost(v)</td>
                         }
                     }
+
                     @if (b.Status == VehicleStatuses.Available) 
                     {
-                        <td><span class="badge bg-success rounded-pill">@b.Status</span></td>
+                        <td><span class="badge bg-success rounded-pill">Open</span></td>
                     }
                     else
                     {
-                        <td><span class="badge bg-danger rounded-pill">@b.Status</span></td>
+                        <td><span class="badge bg-danger rounded-pill">Closed</span></td>
                     }
                 </tr>
             }

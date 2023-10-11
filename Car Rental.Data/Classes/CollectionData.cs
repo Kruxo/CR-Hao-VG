@@ -19,7 +19,7 @@ public class CollectionData : IData
 
     public CollectionData() => SeedData();
 
-    void SeedData()
+    void SeedData() //sample data som finns redan vid start av webbapplikationen
     {
         _persons.Add(new Customer(NextPersonId, 123456, "Nguyen", "Hao"));
         _persons.Add(new Customer(NextPersonId, 654321, "Nguyen", "Pao"));
@@ -29,9 +29,8 @@ public class CollectionData : IData
         _vehicles.Add(new Car(NextVehicleId, "RIP666", "Wolkswagen", 10000, 1, VehicleTypes.Minivan, 500, (VehicleStatuses)1));
         _vehicles.Add(new Motorcycle(NextVehicleId, "COW999", "Yamaha", 5000, 3, VehicleTypes.Motorcycle, 50, (VehicleStatuses)2));
 
-        _bookings.Add(new Booking(NextBookingId, "RIP666", "Nguyen Hao (123456)", 1000.0, null, DateTime.Today.AddDays(-3), null, (VehicleStatuses)2));
+        _bookings.Add(new Booking(NextBookingId, "RIP666", "Nguyen Hao (123456)", 1000.0, null, DateTime.Today.AddDays(-10), null, (VehicleStatuses)2));
         _bookings.Add(new Booking(NextBookingId, "LOL777", "Nguyen Pao (654321)", 4000.0, 4000.0, DateTime.Today.AddDays(-5), DateTime.Today, (VehicleStatuses)1));
-        _bookings.Add(new Booking(NextBookingId, "HAO420", "Nguyen Pao (654321)", 2000.0, 2000.0, DateTime.Today.AddDays(-6), DateTime.Today, (VehicleStatuses)1));
     }
 
     public List<T> Get<T>(Expression<Func<T, bool>>? expression)
@@ -155,18 +154,16 @@ public class CollectionData : IData
         var booking = new Booking(
             NextVehicleId,
             vehicle.RegNo,
-            $"{customer.FirstName} {customer.LastName} ({customer.SocialSecurityNumber})",
-            0.0, // Set appropriate initial values
+            $"{customer.LastName} {customer.FirstName} ({customer.SocialSecurityNumber})",
+            2000.0, 
             null,
             DateTime.Now,
             null,
-            VehicleStatuses.Booked
+            VehicleStatuses.Available
         );
 
-        // Add the booking to the list
         _bookings.Add(booking);
 
-        // Return the booking
         return booking;
     }
 
@@ -195,9 +192,8 @@ public class CollectionData : IData
 
         // Update booking status
         booking.EndRent = DateTime.Now;
-        booking.Status = VehicleStatuses.Available;
+        booking.Status = VehicleStatuses.Booked;
 
-        // Return the booking
         return booking;
     }
 
@@ -207,7 +203,7 @@ public class CollectionData : IData
         {
             return (VehicleTypes)result;
         }
-        // Handle invalid input or return a default value
+
         return default(VehicleTypes);
     }
     public string[] VehicleStatusNames => Enum.GetNames(typeof(VehicleStatuses));

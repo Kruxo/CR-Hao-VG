@@ -1,0 +1,79 @@
+﻿.bn632-hover {
+    width: 70px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    cursor: pointer;
+    margin: 0 10px 5px 10px;
+    height: 25px;
+    text-align: center;
+    border: none;
+    background-size: 300% 100%;
+    border-radius: 5px;
+    -moz-transition: all .4s ease-in-out;
+    -o-transition: all .4s ease-in-out;
+    -webkit-transition: all .4s ease-in-out;
+    transition: all .4s ease-in-out;
+}
+
+.bn632-hover:hover {
+    background-position: 100% 0;
+    -moz-transition: all .4s ease-in-out;
+    -o-transition: all .4s ease-in-out;
+    -webkit-transition: all .4s ease-in-out;
+    transition: all .4s ease-in-out;
+}
+
+.bn632-hover:focus {
+    outline: none;
+}
+
+.bn632-hover.bn22 {
+    background-image: linear-gradient( to right, #0ba360, #3cba92, #30dd8a, #2bb673 );
+    /* box-shadow: 0 4px 15px 0 rgba(23, 168, 108, 0.75); */
+}
+
+
+.bn632-hover.bn23 {
+    background-image: linear-gradient( to right, #009245, #fcee21, #00a8c5, #d9e021 );
+    /* box-shadow: 0 4px 15px 0 rgba(83, 176, 57, 0.75); */
+}
+
+.bn3637 {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Poppins", sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    text-align: center;
+    text-decoration: none;
+    height: 25px;
+    color: #fff;
+    backface-visibility: hidden;
+    border: 0.3rem solid transparent;
+    border-radius: 5px;
+}
+
+.bn37 {
+    border-color: transparent;
+    background-color: #25aae1;
+    color: #fff;
+    transition: transform 0.2s cubic-bezier(0.235, 0, 0.05, 0.95);
+}
+
+.bn37:hover {
+    transform: perspective(1px) scale3d(1.044, 1.044, 1) translateZ(0) !important;
+}
+
+
+.bn38 {
+    border-color: transparent;
+    background-color: #009245;
+    color: #fff;
+    transition: transform 0.2s cubic-bezier(0.235, 0, 0.05, 0.95);
+}
+
+.bn38:hover {
+    transform: perspective(1px) scale3d(1.044, 1.044, 1) translateZ(0) !important;
+}

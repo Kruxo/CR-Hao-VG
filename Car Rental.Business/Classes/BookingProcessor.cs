@@ -26,7 +26,12 @@ public class BookingProcessor
     public string LName { get; set; }
     public string FName { get; set; }
 
+    public bool Delay { get; set; }
+    public bool Processing { get; set; }
+
     public int selectedCustomerId;
+
+
     public IEnumerable<IBooking> GetBookings()
     {
         return _db.Get<IBooking>(null);
@@ -36,7 +41,6 @@ public class BookingProcessor
     {
         return _db.Get<IPerson>(p => p is Customer).OfType<Customer>();
     }
-
 
     public IEnumerable<IVehicle> GetVehicles(VehicleStatuses status = default)
     {
@@ -62,21 +66,15 @@ public class BookingProcessor
     {
         return _db.Single<IVehicle>(v => v.RegNo == regNo);
     }
-  
-    /*public IBooking RentVehicle(int vehicleId, int customerId)
-    {
-        Task.Delay(2000).Wait(); // Simulate a delay
-
-        return _db.RentVehicle(vehicleId, customerId);
-    }*/
 
     public async Task<IBooking> RentVehicle(int vehicleId, int customerId)
     {
-        await Task.Delay(2000); // Simulerar att vi hämtar data från ett API med 2s fördröjning
+        Delay = true; //Boolean som används som condition när vi vill gråa ut våra knappar i html med disabled
+        await Task.Delay(5000); // Simulerar att vi hämtar data från ett API med 5s fördröjning
+        Delay = false;
 
         return _db.RentVehicle(vehicleId, customerId);
     }
-
 
     public IBooking ReturnVehicle(int vehicleId, double distance)
     {
@@ -85,12 +83,12 @@ public class BookingProcessor
 
         if (vehicle == null || booking == null)
         {
-            return null; // Handle the case where the vehicle or booking is not found
+            return null; //Ifall vi inte hittar vårat fordon eller booking
         }
 
         if (booking.KmReturned.HasValue)
         {
-            return null; // Handle the case where the booking has already been returned
+            return null; //ifall vi redan returnerat bookningen
         }
 
         booking.KmReturned = distance;
@@ -102,13 +100,12 @@ public class BookingProcessor
 
     public void AddVehicle()
     {
-        // Ensure VehicleType is set, defaulting to Convertible if not
+    
         if (string.IsNullOrEmpty(VehicleType))
         {
-            VehicleType = VehicleTypes.Convertible.ToString();
+            VehicleType = VehicleTypes.Convertible.ToString(); //default selected vtype i våran dropdown om inget är vald
         }
 
-        // Use the properties to add a new vehicle
         var newVehicle = new Vehicle(
             _db.NextVehicleId,
             RegistrationNumber,
@@ -116,15 +113,13 @@ public class BookingProcessor
             (int)Odometer,
             (int)CostKm,
             Enum.Parse<VehicleTypes>(VehicleType),
-            0, // Value?
+            3000, 
             VehicleStatuses.Available
         );
 
-        // Assuming _db has a method Add<T> to add items
         _db.Add(newVehicle as IVehicle);
 
-        // Optionally, reset properties
-        Make = string.Empty;
+        Make = string.Empty; //resettar våra värden
         RegistrationNumber = string.Empty;
         Odometer = 0;
         CostKm = 0;
@@ -148,7 +143,7 @@ public class BookingProcessor
     }
 
 
-    // Calling Default Interface Methods??
+    //Default Interface Methods
     public string[] VehicleStatusNames => _db.VehicleStatusNames;
     public string[] VehicleTypeNames => _db.VehicleTypeNames;
     public VehicleTypes GetVehicleType(string name) => _db.GetVehicleType(name);

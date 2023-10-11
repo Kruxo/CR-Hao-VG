@@ -15,7 +15,4 @@ public interface IBooking
     public VehicleStatuses Status { get; set; }
     public double? GetCost(IVehicle vehicle);
 
-
-    //public IVehicle vehicle1 { get; set; }
-
 }
