@@ -15,8 +15,9 @@ public class Booking : IBooking
     public DateTime? EndRent { get; set; }
     public VehicleStatuses Status { get; set; }
 
-    public Booking(string regNo, string customer, double kmRent, double? kmReturned, DateTime? startRent, DateTime? endRent, VehicleStatuses status)
+    public Booking(int id, string regNo, string customer, double kmRent, double? kmReturned, DateTime? startRent, DateTime? endRent, VehicleStatuses status)
     {
+        Id = id;
         RegNo = regNo;
         Customer = customer;
         KmRent = kmRent;

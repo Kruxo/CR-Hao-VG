@@ -14,8 +14,9 @@ public class Vehicle : IVehicle
     public double CostDay { get; set; }
     public VehicleStatuses VStatus { get; set; }
 
-    public Vehicle(string regNo, string carMake, int odoMeter, int costKm, VehicleTypes vType, int costDay, VehicleStatuses vStatus)
+    public Vehicle(int id, string regNo, string carMake, int odoMeter, int costKm, VehicleTypes vType, int costDay, VehicleStatuses vStatus)
     {
+        Id = id;
         RegNo = regNo;
         CarMake = carMake;
         OdoMeter = odoMeter;

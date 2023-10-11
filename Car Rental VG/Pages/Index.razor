@@ -85,15 +85,15 @@
                     <td>@v.VType</td>
                     <td>@v.CostDay</td>
                     <td>
-                        <select class="form-select form-select-sm" aria-label=".form-select-sm example">
+                        <select class="form-select form-select-sm" aria-label=".form-select-sm example" @bind="bp.selectedCustomerId">
                             <option selected>Select Customer</option>
                             @foreach (var customer in bp.GetCustomers())
                             {
-                                <option value="@customer.Id">@customer.FirstName @customer.LastName</option>
+                                <option value="@customer.Id">@customer.LastName @customer.FirstName</option>
                             }
                         </select>
                     </td>
-                    <td><button type="button" @onclick="(() => bp.AddVehicle())">Add Vehicle</button></td>
+                    <td><button type="button" @onclick="(() => bp.RentVehicle(v.Id, bp.selectedCustomerId))">Rent</button></td>
 
                     @if(v.VStatus == VehicleStatuses.Available)
                     {

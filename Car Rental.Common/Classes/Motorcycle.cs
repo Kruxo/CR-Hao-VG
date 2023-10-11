@@ -5,8 +5,8 @@ namespace Car_Rental.Common.Classes;
 
 public class Motorcycle : Vehicle
 {
-    public Motorcycle(string regNo, string carMake, int odoMeter, int costKm, VehicleTypes vType, int costDay, VehicleStatuses vStatus) 
-        : base(regNo, carMake, odoMeter, costKm, vType, costDay, vStatus)
+    public Motorcycle(int id, string regNo, string carMake, int odoMeter, int costKm, VehicleTypes vType, int costDay, VehicleStatuses vStatus) 
+        : base(id, regNo, carMake, odoMeter, costKm, vType, costDay, vStatus)
     {
     }
 }

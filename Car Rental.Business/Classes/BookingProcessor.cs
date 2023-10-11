@@ -26,6 +26,7 @@ public class BookingProcessor
     public string LName { get; set; }
     public string FName { get; set; }
 
+    public int selectedCustomerId;
     public IEnumerable<IBooking> GetBookings()
     {
         return _db.Get<IBooking>(null);
@@ -62,19 +63,19 @@ public class BookingProcessor
         return _db.Single<IVehicle>(v => v.RegNo == regNo);
     }
   
-    public IBooking RentVehicle(string vehicleId, int customerId)
+    /*public IBooking RentVehicle(int vehicleId, int customerId)
     {
         Task.Delay(2000).Wait(); // Simulate a delay
 
-        return _db.RentVehicle(int.Parse(vehicleId), customerId);
-    }
+        return _db.RentVehicle(vehicleId, customerId);
+    }*/
 
-    /*public async Task<IBooking> RentVehicleAsync(int vehicleId, int customerId)
+    public async Task<IBooking> RentVehicle(int vehicleId, int customerId)
     {
         await Task.Delay(2000); // Simulerar att vi hämtar data från ett API med 2s fördröjning
 
-        return RentVehicle(vehicleId, customerId);
-    }*/
+        return _db.RentVehicle(vehicleId, customerId);
+    }
 
 
     public IBooking ReturnVehicle(int vehicleId, double distance)
@@ -109,6 +110,7 @@ public class BookingProcessor
 
         // Use the properties to add a new vehicle
         var newVehicle = new Vehicle(
+            _db.NextVehicleId,
             RegistrationNumber,
             Make,
             (int)Odometer,
@@ -132,6 +134,7 @@ public class BookingProcessor
     public void AddCustomer()
     {
         var newCustomer = new Customer(
+            _db.NextPersonId,
             SSN,
             LName,
             FName

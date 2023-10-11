@@ -21,17 +21,17 @@ public class CollectionData : IData
 
     void SeedData()
     {
-        _persons.Add(new Customer(123456, "Nguyen", "Hao"));
-        _persons.Add(new Customer(654321, "Nguyen", "Pao"));
+        _persons.Add(new Customer(NextPersonId, 123456, "Nguyen", "Hao"));
+        _persons.Add(new Customer(NextPersonId, 654321, "Nguyen", "Pao"));
 
-        _vehicles.Add(new Car("LOL777", "Saab", 50000, 2, VehicleTypes.Convertible, 200, (VehicleStatuses)2));
-        _vehicles.Add(new Car("HAO420", "Volvo", 20000, 1, VehicleTypes.Bus, 300, (VehicleStatuses)2));
-        _vehicles.Add(new Car("RIP666", "Wolkswagen", 10000, 2, VehicleTypes.Minivan, 500, (VehicleStatuses)1));
-        _vehicles.Add(new Motorcycle("COW999", "Yamaha", 5000, 3, VehicleTypes.Motorcycle, 50, (VehicleStatuses)2));
+        _vehicles.Add(new Car(NextVehicleId, "LOL777", "Saab", 50000, 2, VehicleTypes.Convertible, 200, (VehicleStatuses)2));
+        _vehicles.Add(new Car(NextVehicleId, "HAO420", "Volvo", 20000, 1, VehicleTypes.Bus, 300, (VehicleStatuses)2));
+        _vehicles.Add(new Car(NextVehicleId, "RIP666", "Wolkswagen", 10000, 1, VehicleTypes.Minivan, 500, (VehicleStatuses)1));
+        _vehicles.Add(new Motorcycle(NextVehicleId, "COW999", "Yamaha", 5000, 3, VehicleTypes.Motorcycle, 50, (VehicleStatuses)2));
 
-        _bookings.Add(new Booking("RIP666", "Nguyen Hao (123456)", 1000.0, null, DateTime.Today.AddDays(-3), null, (VehicleStatuses)2));
-        _bookings.Add(new Booking("LOL777", "Nguyen Pao (654321)", 4000.0, 4000.0, DateTime.Today.AddDays(-5), DateTime.Today, (VehicleStatuses)1));
-        _bookings.Add(new Booking("HAO420", "Nguyen Pao (654321)", 2000.0, 4000.0, DateTime.Today.AddDays(-6), DateTime.Today, (VehicleStatuses)1));
+        _bookings.Add(new Booking(NextBookingId, "RIP666", "Nguyen Hao (123456)", 1000.0, null, DateTime.Today.AddDays(-3), null, (VehicleStatuses)2));
+        _bookings.Add(new Booking(NextBookingId, "LOL777", "Nguyen Pao (654321)", 4000.0, 4000.0, DateTime.Today.AddDays(-5), DateTime.Today, (VehicleStatuses)1));
+        _bookings.Add(new Booking(NextBookingId, "HAO420", "Nguyen Pao (654321)", 2000.0, 2000.0, DateTime.Today.AddDays(-6), DateTime.Today, (VehicleStatuses)1));
     }
 
     public List<T> Get<T>(Expression<Func<T, bool>>? expression)
@@ -153,6 +153,7 @@ public class CollectionData : IData
 
         // Create a new booking
         var booking = new Booking(
+            NextVehicleId,
             vehicle.RegNo,
             $"{customer.FirstName} {customer.LastName} ({customer.SocialSecurityNumber})",
             0.0, // Set appropriate initial values
