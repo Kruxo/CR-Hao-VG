@@ -15,6 +15,7 @@ public class BookingProcessor
 
     public BookingProcessor(IData db) => _db = db;
 
+ 
     public string Make { get; set; }
     public string RegistrationNumber { get; set; }
     public double Odometer { get; set; }
@@ -34,7 +35,6 @@ public class BookingProcessor
     {
         return _db.Get<IPerson>(p => p is Customer).OfType<Customer>();
     }
-
 
 
     public IEnumerable<IVehicle> GetVehicles(VehicleStatuses status = default)
@@ -61,22 +61,7 @@ public class BookingProcessor
     {
         return _db.Single<IVehicle>(v => v.RegNo == regNo);
     }
-    /*public IBooking RentVehicle(string vehicleId, int customerId)
-    {
-        var booking = _db.RentVehicle(vehicleId, customerId);
-
-        if (booking != null)
-        {
-            // Update the booking status or any other necessary information
-            booking.Status = VehicleStatuses.Booked;
-            // ... any other updates ...
-
-            // Add the newly created booking to the list
-            _db.Bookings.Add(booking); // Assuming you have a Bookings list in your data storage
-        }
-
-        return booking;
-    }*/
+  
     public IBooking RentVehicle(string vehicleId, int customerId)
     {
         Task.Delay(2000).Wait(); // Simulate a delay
