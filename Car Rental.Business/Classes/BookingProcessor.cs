@@ -30,8 +30,8 @@ public class BookingProcessor
     public bool Delay { get; set; }
     public bool Processing { get; set; }
 
-    public int selectedCustomerId;
-    public int dist = 420;
+    public int SelectedCustomerId { get; set; }
+    public int Distance {  get; set; }
    
     public string Message { get; private set; }
 
@@ -155,13 +155,14 @@ public class BookingProcessor
 
         if (string.IsNullOrWhiteSpace(LName) || string.IsNullOrWhiteSpace(FName))
         {
-            throw new InputException("Please enter Last Name and First Name."); 
-
+            Message = "Please enter Last Name and First Name.";
+            return;
         }
 
         if (ssnCondition.Length != 6)
         {
-            throw new InputException("SSN must have exactly 6 digits.");
+            Message = "SSN must have exactly 6 digits.";
+            return;
         }
 
         try
@@ -176,18 +177,15 @@ public class BookingProcessor
             _db.Add(newCustomer as IPerson);
 
             //Nollställning efter varje nytt försök
-            SSN = 0;
+
             LName = string.Empty;
             FName = string.Empty;
             Message = null; 
         }
-        catch (InputException ex)
-        {
-            Message = ex.Message;
-        }
+
         catch (Exception ex)
         {
-            Console.WriteLine($"An error occurred: {ex.Message}"); //simulerar loggning så vi ser vart felet är ifall våran InputException inte skulle catcha felet.
+            Console.WriteLine($"An error occurred: {ex.Message}"); 
             Message = "An error occurred while adding a new customer.";
         }
     }

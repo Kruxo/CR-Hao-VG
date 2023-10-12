@@ -106,7 +106,7 @@
                     @if (v.VStatus == VehicleStatuses.Available)
                     {
                         <td>
-                            <select class="form-select form-select-sm" aria-label=".form-select-sm example" @bind="bp.selectedCustomerId" disabled="@bp.Delay">
+                            <select class="form-select form-select-sm" aria-label=".form-select-sm example" @bind="bp.SelectedCustomerId" disabled="@bp.Delay">
                                 <option disabled selected>Select Customer</option>
                                 @foreach (var customer in bp.GetCustomers())
                                 {
@@ -118,19 +118,19 @@
                     }
                     else
                     {
-                        <td><input type="number" class="form-control form-control-sm" placeholder="Distance" @bind="bp.dist" disabled="@bp.Delay"/></td>
+                        <td><input type="number" class="form-control form-control-sm" placeholder="Distance" @bind="bp.Distance" disabled="@bp.Delay"/></td>
                     }
 
                     @if (v.VStatus == VehicleStatuses.Available)
                     {
                         <td>
-                            <button class="bn3637 bn37" type="button" @onclick="(() => bp.RentVehicle(v.Id, bp.selectedCustomerId))" disabled="@bp.Delay">Rent</button>
+                            <button class="bn3637 bn37" type="button" @onclick="(() => bp.RentVehicle(v.Id, bp.SelectedCustomerId))" disabled="@bp.Delay">Rent</button>
                         </td>
                     }
                     else
                     {
                         <td>
-                            <button class="bn3637 bn38" type="button" @onclick="(() => bp.ReturnVehicle(v.Id, bp.dist))" disabled="@bp.Delay">Return</button>
+                            <button class="bn3637 bn38" type="button" @onclick="(() => bp.ReturnVehicle(v.Id, bp.Distance))" disabled="@bp.Delay">Return</button>
                         </td>
                     }
                     <td>
