@@ -29,7 +29,7 @@ public class CollectionData : IData
         _vehicles.Add(new Car(NextVehicleId, "RIP666", "Wolkswagen", 10000, 1, VehicleTypes.Minivan, 500, (VehicleStatuses)1));
         _vehicles.Add(new Motorcycle(NextVehicleId, "COW999", "Yamaha", 5000, 3, VehicleTypes.Motorcycle, 50, (VehicleStatuses)2));
 
-        _bookings.Add(new Booking(NextBookingId, "RIP666", "Nguyen Hao (123456)", 1000.0, null, DateTime.Today.AddDays(-10), null, (VehicleStatuses)2));
+        _bookings.Add(new Booking(NextBookingId, "RIP666", "Nguyen Hao (123456)", 1000.0, null, DateTime.Today, null, (VehicleStatuses)2));
         _bookings.Add(new Booking(NextBookingId, "LOL777", "Alving Paulina (654321)", 4000.0, 4000.0, DateTime.Today.AddDays(-5), DateTime.Today, (VehicleStatuses)1));
     }
 
@@ -129,28 +129,24 @@ public class CollectionData : IData
 
     public IBooking? RentVehicle(int vehicleId, int customerId)
     {
-        // Find the vehicle
+        //Letar efter fordon
         var vehicle = _vehicles.FirstOrDefault(v => v.Id == vehicleId);
 
         if (vehicle == null || vehicle.VStatus != VehicleStatuses.Available)
         {
-            // Vehicle not found or not available for rent
             return null;
         }
 
-        // Find the customer
+        //Letar efter kund
         var customer = _persons.OfType<Customer>().FirstOrDefault(c => c.Id == customerId);
 
         if (customer == null)
         {
-            // Customer not found
             return null;
         }
 
-        // Update vehicle status
         vehicle.VStatus = VehicleStatuses.Booked;
 
-        // Create a new booking
         var booking = new Booking(
             NextVehicleId,
             vehicle.RegNo,
@@ -169,30 +165,21 @@ public class CollectionData : IData
 
     public IBooking? ReturnVehicle(int vehicleId)
     {
-        // Find the vehicle
+        //Letar efter fordon
         var vehicle = _vehicles.FirstOrDefault(v => v.Id == vehicleId);
 
         if (vehicle == null || vehicle.VStatus != VehicleStatuses.Booked)
         {
-            // Vehicle not found or not booked for return
             return null;
         }
 
-        // Find the booking
+        //Letar efter kund
         var booking = _bookings.FirstOrDefault(b => b.RegNo == vehicle.RegNo && b.EndRent == null);
 
         if (booking == null)
         {
-            // Booking not found
             return null;
         }
-
-        // Update vehicle status
-        vehicle.VStatus = VehicleStatuses.Available;
-
-        // Update booking status
-        booking.EndRent = DateTime.Now;
-        booking.Status = VehicleStatuses.Available;
 
         return booking;
     }

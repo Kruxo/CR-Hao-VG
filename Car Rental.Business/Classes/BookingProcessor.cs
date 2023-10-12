@@ -81,26 +81,24 @@ public class BookingProcessor
 
     public IBooking ReturnVehicle(int vehicleId, double distance)
     {
-        var vehicle = _db.Get<IVehicle>(v => v.RegNo == vehicleId.ToString()).FirstOrDefault();
-        var booking = _db.Get<IBooking>(b => b.RegNo == vehicleId.ToString()).FirstOrDefault();
+        var vehicle = _db.Get<IVehicle>(v => v.Id == vehicleId).FirstOrDefault();
+        var booking = _db.Get<IBooking>(b => b.RegNo == vehicle.RegNo && b.EndRent == null).FirstOrDefault();
 
-        if (vehicle == null || booking == null)
+        if (vehicle == null || booking == null || booking.KmReturned.HasValue)
         {
-            return null; //Ifall vi inte hittar vårat fordon eller booking
-        }
-
-        if (booking.KmReturned.HasValue)
-        {
-            return null; //ifall vi redan returnerat bookningen
+            return null;
         }
 
         booking.KmReturned = distance;
 
-        double finalCost = (double)booking.GetCost(vehicle);  
+        // Status uppdateringar
+        vehicle.VStatus = VehicleStatuses.Available;
+        booking.EndRent = DateTime.Today;
+        booking.Status = VehicleStatuses.Booked;
 
         return booking;
     }
-    
+
     public void AddVehicle()
     {
         try
@@ -147,8 +145,6 @@ public class BookingProcessor
         }
     }
 
-
-
     public void AddCustomer()
     {
         string ssnCondition = SSN.ToString();
@@ -189,7 +185,6 @@ public class BookingProcessor
             Message = "An error occurred while adding a new customer.";
         }
     }
-
 
     //Default Interface Methods
     public string[] VehicleStatusNames => _db.VehicleStatusNames;

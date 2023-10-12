@@ -34,7 +34,9 @@ public class Booking : IBooking
             return null;
         }
 
-        double days = this.StartRent.Value.Duration(this.EndRent.Value);
+        TimeSpan duration = this.EndRent.Value - this.StartRent.Value;
+        double days = duration.TotalDays;
+
         return days * vehicle.CostDay + this.KmReturned.Value * vehicle.CostKm;
     }
 
