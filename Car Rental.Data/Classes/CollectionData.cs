@@ -22,7 +22,7 @@ public class CollectionData : IData
     void SeedData() //sample data som finns redan vid start av webbapplikationen
     {
         _persons.Add(new Customer(NextPersonId, 123456, "Nguyen", "Hao"));
-        _persons.Add(new Customer(NextPersonId, 654321, "Nguyen", "Pao"));
+        _persons.Add(new Customer(NextPersonId, 654321, "Alving", "Paulina"));
 
         _vehicles.Add(new Car(NextVehicleId, "LOL777", "Saab", 50000, 2, VehicleTypes.Convertible, 200, (VehicleStatuses)2));
         _vehicles.Add(new Car(NextVehicleId, "HAO420", "Volvo", 20000, 1, VehicleTypes.Bus, 300, (VehicleStatuses)2));
@@ -30,7 +30,7 @@ public class CollectionData : IData
         _vehicles.Add(new Motorcycle(NextVehicleId, "COW999", "Yamaha", 5000, 3, VehicleTypes.Motorcycle, 50, (VehicleStatuses)2));
 
         _bookings.Add(new Booking(NextBookingId, "RIP666", "Nguyen Hao (123456)", 1000.0, null, DateTime.Today.AddDays(-10), null, (VehicleStatuses)2));
-        _bookings.Add(new Booking(NextBookingId, "LOL777", "Nguyen Pao (654321)", 4000.0, 4000.0, DateTime.Today.AddDays(-5), DateTime.Today, (VehicleStatuses)1));
+        _bookings.Add(new Booking(NextBookingId, "LOL777", "Alving Paulina (654321)", 4000.0, 4000.0, DateTime.Today.AddDays(-5), DateTime.Today, (VehicleStatuses)1));
     }
 
     public List<T> Get<T>(Expression<Func<T, bool>>? expression)
@@ -192,7 +192,7 @@ public class CollectionData : IData
 
         // Update booking status
         booking.EndRent = DateTime.Now;
-        booking.Status = VehicleStatuses.Booked;
+        booking.Status = VehicleStatuses.Available;
 
         return booking;
     }
@@ -209,20 +209,5 @@ public class CollectionData : IData
     public string[] VehicleStatusNames => Enum.GetNames(typeof(VehicleStatuses));
     public string[] VehicleTypeNames => Enum.GetNames(typeof(VehicleTypes));
 
-
-
-
-
-    /*
-    public IEnumerable<IPerson> GetPersons() => _persons; //dessa ska bort o bytas mot generiska metoder
-    public IEnumerable<IVehicle> GetVehicles(VehicleStatuses status = default) => _vehicles;
-    public IEnumerable<IBooking> GetBookings() => _bookings;
-   
-    List<T> Get<T>(Expression<Func<T, bool>>? expression);
-    T? Single<T>(Expression<Func<T, bool>>? expression);
-    public void Add<T>(T item);
-    IBooking RentVehicle(int vehicleId, int customerId);
-    IBooking ReturnVehicle(int vehicleId);
-    */
 }
 

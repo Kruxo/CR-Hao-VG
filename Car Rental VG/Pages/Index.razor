@@ -11,12 +11,13 @@
 
 <h1>Car Rental Assignment</h1>
 
-<!-- @if (!string.IsNullOrWhiteSpace(bp.message))
+@if (!string.IsNullOrWhiteSpace(bp.Message))
 {
     <div class="alert alert-danger">
         @bp.Message
     </div>
-} Gör en exception metod-->
+}
+
 
 <div class="row">
     <h4 class="fw-bold" style="padding: 0;">Customers</h4>
@@ -67,12 +68,12 @@
         </thead>
         <tbody>
             <tr>
-                <td><input type="text" placeholder="RegNo" @bind="bp.RegistrationNumber" /></td>
-                <td><input type="text" placeholder="Make" @bind="bp.Make" /></td>
-                <td><input type="number" placeholder="0" @bind="bp.Odometer" /></td>
-                <td><input type="number" placeholder="0" @bind="bp.CostKm" /></td>
+                <td><input type="text" placeholder="RegNo" @bind="bp.RegistrationNumber" disabled="@bp.Delay" /></td>
+                <td><input type="text" placeholder="Make" @bind="bp.Make" disabled="@bp.Delay" /></td>
+                <td><input type="number" placeholder="0" @bind="bp.Odometer" disabled="@bp.Delay" /></td>
+                <td><input type="number" placeholder="0" @bind="bp.CostKm" disabled="@bp.Delay" /></td>
                 <td>
-                    <select class="form-select form-select-sm" aria-label=".form-select-sm example" @bind="bp.VehicleType">
+                    <select class="form-select form-select-sm" aria-label=".form-select-sm example" @bind="bp.VehicleType" disabled="@bp.Delay">
                         <option value="Convertible">@bp.VehicleTypeNames.GetValue(2)</option>
                         <option value="Bus">@bp.VehicleTypeNames.GetValue(1)</option>
                         <option value="Minivan">@bp.VehicleTypeNames.GetValue(0)</option>
@@ -102,15 +103,23 @@
                     <td>@v.CostKm</td>
                     <td>@v.VType</td>
                     <td>@v.CostDay</td>
-                    <td>
-                        <select class="form-select form-select-sm" aria-label=".form-select-sm example" @bind="bp.selectedCustomerId" disabled="@bp.Delay">
-                            <option disabled selected>Select Customer</option>
-                            @foreach (var customer in bp.GetCustomers())
-                            {
-                                <option value="@customer.Id" >@customer.LastName @customer.FirstName</option>
-                            }
-                        </select>
-                    </td>
+                    @if (v.VStatus == VehicleStatuses.Available)
+                    {
+                        <td>
+                            <select class="form-select form-select-sm" aria-label=".form-select-sm example" @bind="bp.selectedCustomerId" disabled="@bp.Delay">
+                                <option disabled selected>Select Customer</option>
+                                @foreach (var customer in bp.GetCustomers())
+                                {
+                                    <option value="@customer.Id">@customer.LastName @customer.FirstName</option>
+                                }
+                            </select>
+                        </td>
+                        
+                    }
+                    else
+                    {
+                        <td><input type="number" class="form-control form-control-sm" placeholder="Distance" @bind="bp.dist" disabled="@bp.Delay"/></td>
+                    }
 
                     @if (v.VStatus == VehicleStatuses.Available)
                     {
@@ -121,7 +130,7 @@
                     else
                     {
                         <td>
-                            <button class="bn3637 bn38" type="button" @onclick="(() => bp.ReturnVehicle(v.Id, bp.selectedCustomerId))" disabled="@bp.Delay">Return</button>
+                            <button class="bn3637 bn38" type="button" @onclick="(() => bp.ReturnVehicle(v.Id, bp.dist))" disabled="@bp.Delay">Return</button>
                         </td>
                     }
                     <td>

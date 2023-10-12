@@ -1,5 +1,6 @@
 ﻿using Car_Rental.Common.Classes;
 using Car_Rental.Common.Enums;
+using Car_Rental.Common.Exceptions;
 using Car_Rental.Common.Interfaces;
 using Car_Rental.Data.Classes;
 using Car_Rental.Data.Interfaces;
@@ -22,7 +23,7 @@ public class BookingProcessor
     public double CostKm { get; set; }
     public string VehicleType { get; set; }
 
-    public int SSN { get; set; }
+    public int SSN { get; set; } 
     public string LName { get; set; }
     public string FName { get; set; }
 
@@ -30,7 +31,9 @@ public class BookingProcessor
     public bool Processing { get; set; }
 
     public int selectedCustomerId;
-
+    public int dist = 420;
+   
+    public string Message { get; private set; }
 
     public IEnumerable<IBooking> GetBookings()
     {
@@ -93,53 +96,100 @@ public class BookingProcessor
 
         booking.KmReturned = distance;
 
-        double finalCost = (double)booking.GetCost(vehicle);  // Use the already obtained vehicle object to calculate the final cost
+        double finalCost = (double)booking.GetCost(vehicle);  
 
         return booking;
     }
-
+    
     public void AddVehicle()
     {
-    
-        if (string.IsNullOrEmpty(VehicleType))
+        try
         {
-            VehicleType = VehicleTypes.Convertible.ToString(); //default selected vtype i våran dropdown om inget är vald
+            if (string.IsNullOrEmpty(Make) || string.IsNullOrEmpty(RegistrationNumber) || string.IsNullOrEmpty(Odometer.ToString()) || string.IsNullOrEmpty(CostKm.ToString()))
+            {
+                throw new InputException("Please fill all input fields with a value.");
+            }
+
+            if (string.IsNullOrEmpty(VehicleType))
+            {
+                VehicleType = VehicleTypes.Convertible.ToString(); //default selected vtype i våran dropdown om inget är vald, programmet krascha innan då den trodde att det var null
+            }
+
+            var newVehicle = new Vehicle(
+                _db.NextVehicleId,
+                RegistrationNumber,
+                Make,
+                (int)Odometer,
+                (int)CostKm,
+                Enum.Parse<VehicleTypes>(VehicleType),
+                3000,
+                VehicleStatuses.Available
+            );
+
+            _db.Add(newVehicle as IVehicle);
+
+            //Nollställning efter varje nytt försök
+            Make = string.Empty;
+            RegistrationNumber = string.Empty;
+            Odometer = 0;
+            CostKm = 0;
+            VehicleType = string.Empty;
+            Message = null;
         }
-
-        var newVehicle = new Vehicle(
-            _db.NextVehicleId,
-            RegistrationNumber,
-            Make,
-            (int)Odometer,
-            (int)CostKm,
-            Enum.Parse<VehicleTypes>(VehicleType),
-            3000, 
-            VehicleStatuses.Available
-        );
-
-        _db.Add(newVehicle as IVehicle);
-
-        Make = string.Empty; //resettar våra värden
-        RegistrationNumber = string.Empty;
-        Odometer = 0;
-        CostKm = 0;
-        VehicleType = string.Empty;
+        catch (InputException ex)
+        {
+            Message = ex.Message;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"An error occurred: {ex.Message}"); //simulerar loggning så vi ser vart felet är ifall våran InputException inte skulle catcha felet.
+            Message = "An error occurred while adding a new vehicle.";
+        }
     }
+
+
 
     public void AddCustomer()
     {
-        var newCustomer = new Customer(
-            _db.NextPersonId,
-            SSN,
-            LName,
-            FName
-        );
+        string ssnCondition = SSN.ToString();
 
-        _db.Add(newCustomer as IPerson);
+        if (string.IsNullOrWhiteSpace(LName) || string.IsNullOrWhiteSpace(FName))
+        {
+            throw new InputException("Please enter Last Name and First Name."); 
 
-        SSN = 0;
-        LName = string.Empty;
-        FName = string.Empty;
+        }
+
+        if (ssnCondition.Length != 6)
+        {
+            throw new InputException("SSN must have exactly 6 digits.");
+        }
+
+        try
+        {
+            var newCustomer = new Customer(
+                _db.NextPersonId,
+                SSN,
+                LName,
+                FName
+            );
+
+            _db.Add(newCustomer as IPerson);
+
+            //Nollställning efter varje nytt försök
+            SSN = 0;
+            LName = string.Empty;
+            FName = string.Empty;
+            Message = null; 
+        }
+        catch (InputException ex)
+        {
+            Message = ex.Message;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"An error occurred: {ex.Message}"); //simulerar loggning så vi ser vart felet är ifall våran InputException inte skulle catcha felet.
+            Message = "An error occurred while adding a new customer.";
+        }
     }
 
 
