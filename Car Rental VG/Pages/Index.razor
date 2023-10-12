@@ -13,13 +13,12 @@
 
 @if (!string.IsNullOrWhiteSpace(bp.Message))
 {
-    <div class="alert alert-danger">
+    <div class="alert alert-danger" >
         @bp.Message
     </div>
 }
 
-
-<div class="row">
+<div class="row col-md-8">
     <h4 class="fw-bold" style="padding: 0;">Customers</h4>
     <table class="table table-hover border">
         <thead>
@@ -31,11 +30,11 @@
             </tr>
         </thead>
         <tbody>
-             
             <tr>
-                <td><input type="number" placeholder="SSN" @bind="bp.SSN" /></td>
-                <td><input type="text" placeholder="Last Name" @bind="bp.LName" /></td>
-                <td><input type="text" placeholder="First Name" @bind="bp.FName" /><button class="bn632-hover bn22" type="button" @onclick="(() => bp.AddCustomer())">Add</button></td>
+                <td><input class="form-control form-control-sm" type="number" placeholder="SSN" @bind="bp.SSN" /></td>
+                <td><input class="form-control form-control-sm" type="text" placeholder="Last Name" @bind="bp.LName" /></td>
+                <td><input class="form-control form-control-sm" type="text" placeholder="First Name" @bind="bp.FName" /></td>
+                <td><button class="bn632-hover bn22" type="button" @onclick="(() => bp.AddCustomer())">Add</button></td>
             </tr>
 
             @foreach(var c in bp.GetCustomers())
@@ -44,6 +43,7 @@
                     <th>@c.SocialSecurityNumber</th>
                     <td>@c.LastName</td>
                     <td>@c.FirstName</td>
+                    <td></td>
                 </tr>  
             }
         </tbody>
@@ -58,9 +58,9 @@
                 <th>RegNo</th>
                 <th>Make</th>
                 <th>Odometer</th>
-                <th>Cost Km</th>
+                <th>Cost (km)</th>
                 <th>Vehicle Type</th>
-                <th>$ Day</th>
+                <th>Day ($)</th>
                 <th>Action</th>
                 <th></th>
                 <th>Status</th>
@@ -149,11 +149,11 @@
             <tr class="table-dark">
                 <th>RegNo</th>
                 <th>Customer</th>
-                <th>Km Rented</th>
-                <th>Km Returned</th>
-                <th>Rented</th>
+                <th>Rented (km)</th>
+                <th>Returned (km)</th>
+                <th>Days Rented</th>
                 <th>Returned</th>
-                <th>Cost</th>
+                <th>Cost ($)</th>
                 <th>Status</th>
             </tr>
         </thead>
@@ -190,6 +190,3 @@
     </table>
 </div>
 
-
-
-<!--  Glöm ej felhantering ifall användaren lägger till en person eller bil på fel sätt ex tomma inputs -->

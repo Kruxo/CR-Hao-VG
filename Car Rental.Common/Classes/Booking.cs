@@ -27,16 +27,14 @@ public class Booking : IBooking
         Status = status;
     }
 
-    public double? GetCost(IVehicle vehicle)
+    public double? GetCost(IVehicle vehicle) 
     {
         if (this.StartRent == null || this.EndRent == null || this.KmReturned == null)
         {
             return null;
         }
 
-        TimeSpan duration = this.EndRent.Value - this.StartRent.Value;
-        double days = duration.TotalDays;
-
+        double days = this.StartRent.Value.Duration(this.EndRent.Value);
         return days * vehicle.CostDay + this.KmReturned.Value * vehicle.CostKm;
     }
 

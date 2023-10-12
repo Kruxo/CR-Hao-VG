@@ -14,11 +14,8 @@ public interface IData
     int NextBookingId { get; }
     IBooking RentVehicle(int vehicleId, int customerId);
     IBooking ReturnVehicle(int vehicleId);
-
-    // Default Interface Methods
     public string[] VehicleStatusNames => Enum.GetNames(typeof(VehicleStatuses));
     public string[] VehicleTypeNames => Enum.GetNames(typeof(VehicleTypes));
-
     public VehicleTypes GetVehicleType(string name);
 
 

@@ -13,28 +13,32 @@ namespace Car_Rental.Business.Classes;
 public class BookingProcessor
 {
     private readonly IData _db;
-
     public BookingProcessor(IData db) => _db = db;
 
- 
+
+    //RENT & RETURN VEHICLE
     public string Make { get; set; }
     public string RegistrationNumber { get; set; }
     public double Odometer { get; set; }
     public double CostKm { get; set; }
     public string VehicleType { get; set; }
+    public int Distance { get; set; }
 
-    public int SSN { get; set; } 
+
+    //ADD CUSTOMER
+    public int SSN { get; set; }
     public string LName { get; set; }
     public string FName { get; set; }
+    public int SelectedCustomerId { get; set; }
 
+
+    //MISCELLANEOUS
     public bool Delay { get; set; }
     public bool Processing { get; set; }
-
-    public int SelectedCustomerId { get; set; }
-    public int Distance {  get; set; }
-   
     public string Message { get; private set; }
 
+
+    //GET LISTS
     public IEnumerable<IBooking> GetBookings()
     {
         return _db.Get<IBooking>(null);
@@ -50,11 +54,8 @@ public class BookingProcessor
         return _db.Get<IVehicle>(v => status == default || v.VStatus == status);
     }
 
-    public List<IVehicle> GetAllVehicles()
-    {
-        return _db.Get<IVehicle>(null);
-    }
 
+    //GET SINGLE
     public IPerson? GetPerson(string ssn)
     {
         return _db.Single<IPerson>(p => p is Customer && (p as Customer).SocialSecurityNumber.ToString() == ssn);
@@ -70,6 +71,8 @@ public class BookingProcessor
         return _db.Single<IVehicle>(v => v.RegNo == regNo);
     }
 
+
+    //BOOKING
     public async Task<IBooking> RentVehicle(int vehicleId, int customerId)
     {
         Delay = true; //Boolean som används som condition när vi vill gråa ut våra knappar i html med disabled
@@ -93,7 +96,7 @@ public class BookingProcessor
 
         // Status uppdateringar
         vehicle.VStatus = VehicleStatuses.Available;
-        booking.EndRent = DateTime.Today;
+        booking.EndRent = DateTime.Now;
         booking.Status = VehicleStatuses.Booked;
 
         return booking;
@@ -105,7 +108,7 @@ public class BookingProcessor
         {
             if (string.IsNullOrEmpty(Make) || string.IsNullOrEmpty(RegistrationNumber) || string.IsNullOrEmpty(Odometer.ToString()) || string.IsNullOrEmpty(CostKm.ToString()))
             {
-                throw new InputException("Please fill all input fields with a value.");
+                throw new InputException("Error! Please fill all input fields with a value.");
             }
 
             if (string.IsNullOrEmpty(VehicleType))
@@ -120,7 +123,7 @@ public class BookingProcessor
                 (int)Odometer,
                 (int)CostKm,
                 Enum.Parse<VehicleTypes>(VehicleType),
-                3000,
+                100,
                 VehicleStatuses.Available
             );
 
@@ -140,8 +143,8 @@ public class BookingProcessor
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"An error occurred: {ex.Message}"); //simulerar loggning så vi ser vart felet är ifall våran InputException inte skulle catcha felet.
-            Message = "An error occurred while adding a new vehicle.";
+            Console.WriteLine($"Error occurred at:: {ex.Message}"); //simulerar loggning så vi ser vart felet är ifall våran InputException inte skulle catcha felet.
+            Message = "Error! Couldn't add a new vehicle";
         }
     }
 
@@ -151,13 +154,13 @@ public class BookingProcessor
 
         if (string.IsNullOrWhiteSpace(LName) || string.IsNullOrWhiteSpace(FName))
         {
-            Message = "Please enter Last Name and First Name.";
+            Message = "Error! Please enter Last Name and First Name.";
             return;
         }
 
         if (ssnCondition.Length != 6)
         {
-            Message = "SSN must have exactly 6 digits.";
+            Message = "Error! SSN must have exactly 6 digits.";
             return;
         }
 
@@ -176,19 +179,22 @@ public class BookingProcessor
 
             LName = string.Empty;
             FName = string.Empty;
-            Message = null; 
+            Message = null;
         }
 
         catch (Exception ex)
         {
-            Console.WriteLine($"An error occurred: {ex.Message}"); 
-            Message = "An error occurred while adding a new customer.";
+            Console.WriteLine($"Error occurred at: {ex.Message}");
+            Message = "Error! Couldn't add a new customer";
         }
     }
 
-    //Default Interface Methods
+
+    //DEFAULT INTERFACE METHODS
     public string[] VehicleStatusNames => _db.VehicleStatusNames;
     public string[] VehicleTypeNames => _db.VehicleTypeNames;
     public VehicleTypes GetVehicleType(string name) => _db.GetVehicleType(name);
+
+    //Vid användning av ett API ska man då kunna lägga till metoder i ett senare tillfälle utan att förstöra ursprungskoden. 
 }
 

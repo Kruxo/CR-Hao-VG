@@ -13,13 +13,13 @@ public class CollectionData : IData
     readonly List<IVehicle> _vehicles = new List<IVehicle>();
     readonly List<IBooking> _bookings = new List<IBooking>();
 
-    public int NextVehicleId => _vehicles.Count.Equals(0) ? 1 : _vehicles.Max(b => b.Id) + 1; //skapar unikt Id då var använder oss av colletion o inte databaser
-    public int NextPersonId => _persons.Count.Equals(0) ? 1 : _persons.Max(b => b.Id) + 1;
+    public int NextVehicleId => _vehicles.Count.Equals(0) ? 1 : _vehicles.Max(b => b.Id) + 1; //Skapar unikt Id då vi använder oss av colletion o inte databaser så vi fejkar det
+    public int NextPersonId => _persons.Count.Equals(0) ? 1 : _persons.Max(b => b.Id) + 1; //lägger till +1 på högsta ID:t om det finns, annars börjr vi på 1
     public int NextBookingId => _bookings.Count.Equals(0) ? 1 : _bookings.Max(b => b.Id) + 1;
 
     public CollectionData() => SeedData();
 
-    void SeedData() //sample data som finns redan vid start av webbapplikationen
+    void SeedData() //Sample data som finns redan vid start av webbapplikationen
     {
         _persons.Add(new Customer(NextPersonId, 123456, "Nguyen", "Hao"));
         _persons.Add(new Customer(NextPersonId, 654321, "Alving", "Paulina"));
@@ -30,14 +30,14 @@ public class CollectionData : IData
         _vehicles.Add(new Motorcycle(NextVehicleId, "COW999", "Yamaha", 5000, 3, VehicleTypes.Motorcycle, 50, (VehicleStatuses)2));
 
         _bookings.Add(new Booking(NextBookingId, "RIP666", "Nguyen Hao (123456)", 1000.0, null, DateTime.Today, null, (VehicleStatuses)2));
-        _bookings.Add(new Booking(NextBookingId, "LOL777", "Alving Paulina (654321)", 4000.0, 4000.0, DateTime.Today.AddDays(-5), DateTime.Today, (VehicleStatuses)1));
+        _bookings.Add(new Booking(NextBookingId, "LOL777", "Alving Paulina (654321)", 4000.0, 4000.0, DateTime.Today.AddDays(-10), DateTime.Today, (VehicleStatuses)1));
     }
 
     public List<T> Get<T>(Expression<Func<T, bool>>? expression)
     {
         if (expression == null)
         {
-            // If no expression is provided, return the entire list.
+            // Returnera hela listan om expression är null
             if (typeof(T) == typeof(IPerson))
             {
                 return _persons.OfType<T>().ToList();
@@ -52,13 +52,12 @@ public class CollectionData : IData
             }
             else
             {
-                // Handle other types if needed
                 return new List<T>();
             }
         }
         else
         {
-            // If an expression is provided, use LINQ to filter the list.
+            // Om expression inte är null kan vi filtrera med Linq
             if (typeof(T) == typeof(IPerson))
             {
                 return _persons.OfType<T>().Where(expression.Compile()).ToList();
@@ -73,7 +72,6 @@ public class CollectionData : IData
             }
             else
             {
-                // Handle other types if needed
                 return new List<T>();
             }
         }
@@ -83,11 +81,10 @@ public class CollectionData : IData
     {
         if (expression == null)
         {
-            // If no expression is provided, return null.
             return default;
         }
 
-        // Check the type of T and find the single item based on the expression.
+        // Typ av T kollas upp och letar efter ett enda item baserat på våran expression 
         if (typeof(T) == typeof(IPerson))
         {
             return _persons.OfType<T>().SingleOrDefault(expression.Compile());
@@ -102,7 +99,6 @@ public class CollectionData : IData
         }
         else
         {
-            // Handle other types if needed
             return default;
         }
     }
@@ -129,7 +125,7 @@ public class CollectionData : IData
 
     public IBooking? RentVehicle(int vehicleId, int customerId)
     {
-        //Letar efter fordon
+
         var vehicle = _vehicles.FirstOrDefault(v => v.Id == vehicleId);
 
         if (vehicle == null || vehicle.VStatus != VehicleStatuses.Available)
@@ -137,7 +133,6 @@ public class CollectionData : IData
             return null;
         }
 
-        //Letar efter kund
         var customer = _persons.OfType<Customer>().FirstOrDefault(c => c.Id == customerId);
 
         if (customer == null)
@@ -165,7 +160,6 @@ public class CollectionData : IData
 
     public IBooking? ReturnVehicle(int vehicleId)
     {
-        //Letar efter fordon
         var vehicle = _vehicles.FirstOrDefault(v => v.Id == vehicleId);
 
         if (vehicle == null || vehicle.VStatus != VehicleStatuses.Booked)
@@ -173,7 +167,6 @@ public class CollectionData : IData
             return null;
         }
 
-        //Letar efter kund
         var booking = _bookings.FirstOrDefault(b => b.RegNo == vehicle.RegNo && b.EndRent == null);
 
         if (booking == null)
@@ -184,7 +177,9 @@ public class CollectionData : IData
         return booking;
     }
 
-    public VehicleTypes GetVehicleType(string name)
+    public string[] VehicleStatusNames => Enum.GetNames(typeof(VehicleStatuses));
+    public string[] VehicleTypeNames => Enum.GetNames(typeof(VehicleTypes));
+    public VehicleTypes GetVehicleType(string name) //Konverterar ett string enum till ett enum värde 
     {
         if (Enum.TryParse(typeof(VehicleTypes), name, out object result))
         {
@@ -193,8 +188,5 @@ public class CollectionData : IData
 
         return default(VehicleTypes);
     }
-    public string[] VehicleStatusNames => Enum.GetNames(typeof(VehicleStatuses));
-    public string[] VehicleTypeNames => Enum.GetNames(typeof(VehicleTypes));
-
 }
 
