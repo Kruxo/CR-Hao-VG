@@ -37,7 +37,7 @@ public class CollectionData : IData
     {
         if (expression == null)
         {
-            // Returnera hela listan om expression är null
+            // Returnerar hela listan om parametern expression är null dvs våran lambda expression. Parametern tar in T och får ut en bool.
             if (typeof(T) == typeof(IPerson))
             {
                 return _persons.OfType<T>().ToList();
@@ -179,14 +179,7 @@ public class CollectionData : IData
 
     public string[] VehicleStatusNames => Enum.GetNames(typeof(VehicleStatuses));
     public string[] VehicleTypeNames => Enum.GetNames(typeof(VehicleTypes));
-    public VehicleTypes GetVehicleType(string name) //Konverterar ett string enum till ett enum värde 
-    {
-        if (Enum.TryParse(typeof(VehicleTypes), name, out object result))
-        {
-            return (VehicleTypes)result;
-        }
+    public VehicleTypes GetVehicleType(string name) => Enum.TryParse<VehicleTypes>(name, out var result) ? result : default;  //Konverterar och returnerar en string enum till ett enum värde
 
-        return default(VehicleTypes);
-    }
 }
 

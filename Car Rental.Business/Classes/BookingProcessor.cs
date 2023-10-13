@@ -22,11 +22,11 @@ public class BookingProcessor
     public double Odometer { get; set; }
     public double CostKm { get; set; }
     public string VehicleType { get; set; }
-    public int Distance { get; set; }
+    public string Distance { get; set; }
 
 
     //ADD CUSTOMER
-    public int SSN { get; set; }
+    public string SSN { get; set; }
     public string LName { get; set; }
     public string FName { get; set; }
     public int SelectedCustomerId { get; set; }
@@ -82,8 +82,14 @@ public class BookingProcessor
         return _db.RentVehicle(vehicleId, customerId);
     }
 
-    public IBooking ReturnVehicle(int vehicleId, double distance)
+    public IBooking ReturnVehicle(int vehicleId, string distance)
     {
+        if(!int.TryParse(distance, out int dist))
+        {
+            Message = "Error! Please enter the distance in numbers.";
+            return null;
+        }
+
         var vehicle = _db.Get<IVehicle>(v => v.Id == vehicleId).FirstOrDefault();
         var booking = _db.Get<IBooking>(b => b.RegNo == vehicle.RegNo && b.EndRent == null).FirstOrDefault();
 
@@ -92,12 +98,15 @@ public class BookingProcessor
             return null;
         }
 
-        booking.KmReturned = distance;
+        booking.KmReturned = dist;
 
         // Status uppdateringar
         vehicle.VStatus = VehicleStatuses.Available;
         booking.EndRent = DateTime.Now;
         booking.Status = VehicleStatuses.Booked;
+
+        //Nollställning 
+        Distance = string.Empty;
 
         return booking;
     }
@@ -150,7 +159,6 @@ public class BookingProcessor
 
     public void AddCustomer()
     {
-        string ssnCondition = SSN.ToString();
 
         if (string.IsNullOrWhiteSpace(LName) || string.IsNullOrWhiteSpace(FName))
         {
@@ -158,7 +166,7 @@ public class BookingProcessor
             return;
         }
 
-        if (ssnCondition.Length != 6)
+        if (SSN.Length != 6 || !int.TryParse(SSN, out int ssn)) //TryParse för att konvertera SSN till en int. Detta för att input fältet ska kunna visa sin placeholder då en public int SSN skulle ha default värdet 0 redan från start. 
         {
             Message = "Error! SSN must have exactly 6 digits.";
             return;
@@ -168,15 +176,15 @@ public class BookingProcessor
         {
             var newCustomer = new Customer(
                 _db.NextPersonId,
-                SSN,
+                ssn, // Use the parsed integer value
                 LName,
                 FName
             );
 
             _db.Add(newCustomer as IPerson);
 
-            //Nollställning efter varje nytt försök
-
+            //Nollställning 
+            SSN = string.Empty;
             LName = string.Empty;
             FName = string.Empty;
             Message = null;
@@ -195,6 +203,5 @@ public class BookingProcessor
     public string[] VehicleTypeNames => _db.VehicleTypeNames;
     public VehicleTypes GetVehicleType(string name) => _db.GetVehicleType(name);
 
-    //Vid användning av ett API ska man då kunna lägga till metoder i ett senare tillfälle utan att förstöra ursprungskoden. 
 }
 

@@ -78,3 +78,7 @@
 .bn38:hover {
     transform: perspective(1px) scale3d(1.044, 1.044, 1) translateZ(0) !important;
 }
+
+.custom-background {
+    background-color: lightblue;
+}
