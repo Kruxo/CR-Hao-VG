@@ -22,7 +22,7 @@ public class CollectionData : IData
     void SeedData() //Sample data som finns redan vid start av webbapplikationen
     {
         _persons.Add(new Customer(NextPersonId, 123456, "Nguyen", "Hao"));
-        _persons.Add(new Customer(NextPersonId, 654321, "Alving", "Paulina"));
+        _persons.Add(new Customer(NextPersonId, 654321, "Nygren", "Hans"));
 
         _vehicles.Add(new Car(NextVehicleId, "LOL777", "Saab", 50000, 2, VehicleTypes.Convertible, 200, (VehicleStatuses)2));
         _vehicles.Add(new Car(NextVehicleId, "HAO420", "Volvo", 20000, 1, VehicleTypes.Bus, 300, (VehicleStatuses)2));
@@ -30,7 +30,7 @@ public class CollectionData : IData
         _vehicles.Add(new Motorcycle(NextVehicleId, "COW999", "Yamaha", 5000, 3, VehicleTypes.Motorcycle, 50, (VehicleStatuses)2));
 
         _bookings.Add(new Booking(NextBookingId, "RIP666", "Nguyen Hao (123456)", 1000.0, null, DateTime.Today, null, (VehicleStatuses)2));
-        _bookings.Add(new Booking(NextBookingId, "LOL777", "Alving Paulina (654321)", 4000.0, 4000.0, DateTime.Today.AddDays(-10), DateTime.Today, (VehicleStatuses)1));
+        _bookings.Add(new Booking(NextBookingId, "LOL777", "Nygren Hans (654321)", 4000.0, 4000.0, DateTime.Today.AddDays(-10), DateTime.Today, (VehicleStatuses)1));
     }
 
     public List<T> Get<T>(Expression<Func<T, bool>>? expression)

@@ -75,6 +75,12 @@ public class BookingProcessor
     //BOOKING
     public async Task<IBooking> RentVehicle(int vehicleId, int customerId)
     {
+        if(SelectedCustomerId == 0) //Condition möts om ingen customer är vald och då är SelectedCustomerId = 0, vilket är default värdet.
+        {
+            Message = "Error! Please pick a customer.";
+            return null;
+        }
+
         Delay = true; //Boolean som används som condition när vi vill gråa ut våra knappar i html med disabled
         await Task.Delay(5000); // Simulerar att vi hämtar data från ett API med 5s fördröjning
         Delay = false;
@@ -86,7 +92,7 @@ public class BookingProcessor
     {
         if(!int.TryParse(distance, out int dist))
         {
-            Message = "Error! Please enter the distance in numbers.";
+            Message = "Error! Please enter the distance.";
             return null;
         }
 
