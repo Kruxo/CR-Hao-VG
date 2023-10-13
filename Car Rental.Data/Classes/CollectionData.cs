@@ -57,7 +57,7 @@ public class CollectionData : IData
         }
         else
         {
-            // Om expression inte är null kan vi filtrera med Linq
+            // Om expression inte är null returnerar vi fältet med linq filtrering genom att kompilera expression till ett delegat som filtrerar genom elementen
             if (typeof(T) == typeof(IPerson))
             {
                 return _persons.OfType<T>().Where(expression.Compile()).ToList();
