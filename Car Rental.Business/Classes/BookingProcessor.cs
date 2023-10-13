@@ -166,13 +166,13 @@ public class BookingProcessor
     public void AddCustomer()
     {
 
-        if (string.IsNullOrWhiteSpace(LName) || string.IsNullOrWhiteSpace(FName))
+        if (string.IsNullOrEmpty(LName) || string.IsNullOrEmpty(FName))
         {
             Message = "Error! Please enter Last Name and First Name.";
             return;
         }
 
-        if (SSN.Length != 6 || !int.TryParse(SSN, out int ssn)) //TryParse för att konvertera SSN till en int. Detta för att input fältet ska kunna visa sin placeholder då en public int SSN skulle ha default värdet 0 redan från start. 
+        if (string.IsNullOrEmpty(SSN) || SSN.Length != 6 || !int.TryParse(SSN, out int ssn)) //TryParse för att konvertera SSN till en int. Detta för att input fältet ska kunna visa sin placeholder då en public int SSN skulle ha default värdet 0 redan från start. 
         {
             Message = "Error! SSN must have exactly 6 digits.";
             return;
