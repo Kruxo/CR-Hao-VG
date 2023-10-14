@@ -3,14 +3,15 @@
 @using Car_Rental.Common.Classes;
 @using Car_Rental.Common.Interfaces;
 @using Car_Rental.Common.Enums;
-@inject BookingProcessor bp
+@inject BookingProcessor bp 
+
 
 <link rel="stylesheet" href="css/Index.css" />
 
 <PageTitle>Car Rental Assignment</PageTitle>
 
 
-    <h1 class="fw-bold">Car Rental Assignment</h1> <!-- För att kunna få allt så närme vänstra hörnet-->
+    <h1 class="fw-bold">Car Rental Assignment</h1> 
 
     @if (!string.IsNullOrWhiteSpace(bp.Message))
     {

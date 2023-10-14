@@ -12,7 +12,8 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
-builder.Services.AddSingleton<BookingProcessor>();
+builder.Services.AddSingleton<BookingProcessor>(); //Istället för att skapa ny instans av BookingProcessor hela tiden så injekterar vi
+                                                   //BookingProcessor i den razor sidan vi vill att våran asp.net core runtime ska ge oss tillgång till BookingProcessor vid begäran
 builder.Services.AddSingleton<IData, CollectionData>();
 
 await builder.Build().RunAsync();

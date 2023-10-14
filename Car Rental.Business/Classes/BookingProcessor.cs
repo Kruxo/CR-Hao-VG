@@ -9,7 +9,6 @@ using System.Reflection.Metadata.Ecma335;
 
 namespace Car_Rental.Business.Classes;
 
-
 public class BookingProcessor
 {
     private readonly IData _db;
