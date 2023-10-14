@@ -12,7 +12,7 @@ namespace Car_Rental.Business.Classes;
 public class BookingProcessor
 {
     private readonly IData _db;
-    public BookingProcessor(IData db) => _db = db;
+    public BookingProcessor(IData db) => _db = db; //Pratar med våran datalager genom BookingProcessor och på så sätt få tillgång till det som finns i CollectionData, men endast efter att vi har injektserat det i Program.cs
 
 
     //RENT & RETURN VEHICLE
