@@ -6,6 +6,7 @@ using Car_Rental.Data.Classes;
 using Car_Rental.Data.Interfaces;
 using System;
 using System.Reflection.Metadata.Ecma335;
+using System.Runtime.Intrinsics.X86;
 
 namespace Car_Rental.Business.Classes;
 
@@ -13,7 +14,6 @@ public class BookingProcessor
 {
     private readonly IData _db;
     public BookingProcessor(IData db) => _db = db; //Pratar med våran datalager genom BookingProcessor och på så sätt få tillgång till det som finns i CollectionData, men endast efter att vi har injektserat det i Program.cs
-
 
     //RENT & RETURN VEHICLE
     public string Make { get; set; }
@@ -24,7 +24,7 @@ public class BookingProcessor
     public string Distance { get; set; }
 
 
-    //ADD CUSTOMER
+    //CUSTOMER
     public string SSN { get; set; }
     public string LName { get; set; }
     public string FName { get; set; }
@@ -71,7 +71,7 @@ public class BookingProcessor
     }
 
 
-    //BOOKING
+    //BOOKINGS, VEHICLES, CUSTOMERS
     public async Task<IBooking> RentVehicle(int vehicleId, int customerId)
     {
         if(SelectedCustomerId == 0) //Condition möts om ingen customer är vald och då är SelectedCustomerId = 0, vilket är default värdet.
@@ -127,7 +127,13 @@ public class BookingProcessor
 
             if (string.IsNullOrEmpty(VehicleType))
             {
-                VehicleType = VehicleTypes.Convertible.ToString(); //default selected vtype i våran dropdown om inget är vald, programmet krascha innan då den trodde att det var null
+                VehicleType = VehicleTypes.Convertible.ToString(); //Default selected vtype i våran dropdown om inget är vald, programmet krascha innan då den trodde att det var null
+            }
+
+            if (_db.Get<IVehicle>(v => v is Vehicle && (v as Vehicle).RegNo == RegistrationNumber).Any()) //Any är en Linq metod som kollar om RegNo redan existerar i listan. Den returnerar en boolean beroende på om kriterierna möts eller ej.
+            {                                                                                             //Ingen specifik restriktion på RegNo för exempelvis längd då man kan ha custom registreringsnummer för fordon
+                Message = "Error! Registration Number already exists."; 
+                return; 
             }
 
             var newVehicle = new Vehicle(
@@ -157,7 +163,7 @@ public class BookingProcessor
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error occurred at:: {ex.Message}"); //simulerar loggning så vi ser vart felet är ifall våran InputException inte skulle catcha felet.
+            Console.WriteLine($"Error occurred at:: {ex.Message}"); //Simulerar loggning så vi ser vart felet är ifall våran InputException inte skulle catcha felet.
             Message = "Error! Couldn't add a new vehicle";
         }
     }
@@ -177,11 +183,17 @@ public class BookingProcessor
             return;
         }
 
+        if (_db.Get<IPerson>(p => p is Customer && (p as Customer).SocialSecurityNumber == ssn).Any()) //Any är en Linq metod som kollar om SSN redan existerar i Customer listan. Den returnerar en boolean beroende på om kriterierna möts eller ej.
+        {
+            Message = "Error! SSN already exists.";
+            return;
+        }
+
         try
         {
             var newCustomer = new Customer(
                 _db.NextPersonId,
-                ssn, // Use the parsed integer value
+                ssn, 
                 LName,
                 FName
             );
@@ -201,7 +213,6 @@ public class BookingProcessor
             Message = "Error! Couldn't add a new customer";
         }
     }
-
 
     //DEFAULT INTERFACE METHODS
     public string[] VehicleStatusNames => _db.VehicleStatusNames;
