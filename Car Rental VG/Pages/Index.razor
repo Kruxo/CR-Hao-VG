@@ -109,10 +109,10 @@
                     {
                         <td>
                             <select class="form-select form-select-sm" aria-label=".form-select-sm example" @bind="bp.SelectedCustomerId" disabled="@bp.Delay">
-                                <option disabled selected>Select Customer</option>
+                                <option disabled value="0">Select Customer</option>
                                 @foreach (var customer in bp.GetCustomers())
                                 {
-                                    <option value="@customer.Id">@customer.LastName @customer.FirstName</option>
+                                    <option value="@customer.Id">@customer.LastName @customer.FirstName (@customer.SocialSecurityNumber)</option>
                                 }
                             </select>
                         </td>
