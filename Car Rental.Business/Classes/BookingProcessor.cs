@@ -5,6 +5,7 @@ using Car_Rental.Common.Interfaces;
 using Car_Rental.Data.Classes;
 using Car_Rental.Data.Interfaces;
 using System;
+using System.Linq.Expressions;
 using System.Reflection.Metadata.Ecma335;
 using System.Runtime.Intrinsics.X86;
 
@@ -15,6 +16,18 @@ public class BookingProcessor
     private readonly IData _db;
     public BookingProcessor(IData db) => _db = db; //Pratar med våran datalager genom BookingProcessor och på så sätt få tillgång till det som finns i CollectionData, men endast efter att vi har injektserat det i Program.cs
 
+   /* public class Inputs
+    {
+        public IVehicle Vehicle { get; set; }
+        public IPerson Customer { get; set; }
+
+        public bool Delay { get; set; }
+        public bool Processing { get; set; }
+        public string Message { get; private set; }
+    } */
+    
+
+    
     //RENT & RETURN VEHICLE
     public string Make { get; set; }
     public string RegistrationNumber { get; set; }
@@ -60,16 +73,10 @@ public class BookingProcessor
         return _db.Single<IPerson>(p => p is Customer && (p as Customer).SocialSecurityNumber.ToString() == ssn);
     }
 
-    public IVehicle? GetVehicle(int vehicleId)
+    public IVehicle? GetVehicle(Expression<Func<IVehicle, bool>> expression)
     {
-        return _db.Single<IVehicle>(v => v.Id == vehicleId);
+        return _db.Single(expression);
     }
-
-    public IVehicle? GetVehicle(string regNo)
-    {
-        return _db.Single<IVehicle>(v => v.RegNo == regNo);
-    }
-
 
     //BOOKINGS, VEHICLES, CUSTOMERS
     public async Task<IBooking> RentVehicle(int vehicleId, int customerId)
@@ -83,6 +90,7 @@ public class BookingProcessor
         Delay = true; //Boolean som används som condition när vi vill gråa ut våra knappar i html med disabled
         await Task.Delay(5000); // Simulerar att vi hämtar data från ett API med 5s fördröjning
         Delay = false;
+        SelectedCustomerId = 0; //Nollställer efter lyckad renting
 
         return _db.RentVehicle(vehicleId, customerId);
     }
@@ -96,7 +104,7 @@ public class BookingProcessor
         }
 
         var vehicle = _db.Get<IVehicle>(v => v.Id == vehicleId).FirstOrDefault();
-        var booking = _db.Get<IBooking>(b => b.RegNo == vehicle.RegNo && b.EndRent == null).FirstOrDefault();
+        var booking = _db.Get<IBooking>(b => b.VehicleBooking.RegNo == vehicle.RegNo && b.EndRent == null).FirstOrDefault();
 
         if (vehicle == null || booking == null || booking.KmReturned.HasValue)
         {

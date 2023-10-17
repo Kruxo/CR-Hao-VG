@@ -17,7 +17,7 @@ public class Vehicle : IVehicle
     public Vehicle(int id, string regNo, string carMake, int odoMeter, int costKm, VehicleTypes vType, int costDay, VehicleStatuses vStatus)
     {
         Id = id;
-        RegNo = regNo;
+        RegNo = regNo; 
         CarMake = carMake;
         OdoMeter = odoMeter;
         CostKm = costKm;
