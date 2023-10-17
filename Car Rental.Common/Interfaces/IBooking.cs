@@ -6,8 +6,8 @@ namespace Car_Rental.Common.Interfaces;
 public interface IBooking
 {
     public int Id { get; set; }
-    public IVehicle VehicleBooking { get; set; }
-    public IPerson CustomerBooking { get; set; }
+    public IVehicle Vehicle { get; set; }
+    public IPerson Customer { get; set; }
     public double KmRent { get; set; }
     public double? KmReturned { get; set; }
     public DateTime? StartRent { get; set; }

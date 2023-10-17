@@ -5,7 +5,6 @@ using Car_Rental.Common.Interfaces;
 using Car_Rental.Data.Classes;
 using Car_Rental.Data.Interfaces;
 using System;
-using System.Linq.Expressions;
 using System.Reflection.Metadata.Ecma335;
 using System.Runtime.Intrinsics.X86;
 
@@ -16,38 +15,24 @@ public class BookingProcessor
     private readonly IData _db;
     public BookingProcessor(IData db) => _db = db; //Pratar med våran datalager genom BookingProcessor och på så sätt få tillgång till det som finns i CollectionData, men endast efter att vi har injektserat det i Program.cs
 
-   /* public class Inputs
-    {
-        public IVehicle Vehicle { get; set; }
-        public IPerson Customer { get; set; }
-
-        public bool Delay { get; set; }
-        public bool Processing { get; set; }
-        public string Message { get; private set; }
-    } */
-    
-
-    
     //RENT & RETURN VEHICLE
     public string Make { get; set; }
     public string RegistrationNumber { get; set; }
     public double Odometer { get; set; }
     public double CostKm { get; set; }
     public string VehicleType { get; set; }
-    public string Distance { get; set; }
-
 
     //CUSTOMER
     public string SSN { get; set; }
     public string LName { get; set; }
     public string FName { get; set; }
-    public int SelectedCustomerId { get; set; }
-
 
     //MISCELLANEOUS
     public bool Delay { get; set; }
     public bool Processing { get; set; }
     public string Message { get; private set; }
+    public string Distance { get; set; }
+    public int SelectedCustomerId { get; set; }
 
 
     //GET LISTS
@@ -73,15 +58,21 @@ public class BookingProcessor
         return _db.Single<IPerson>(p => p is Customer && (p as Customer).SocialSecurityNumber.ToString() == ssn);
     }
 
-    public IVehicle? GetVehicle(Expression<Func<IVehicle, bool>> expression)
+    public IVehicle? GetVehicle(int vehicleId)
     {
-        return _db.Single(expression);
+        return _db.Single<IVehicle>(v => v.Id == vehicleId);
     }
+
+    public IVehicle? GetVehicle(string regNo)
+    {
+        return _db.Single<IVehicle>(v => v.RegNo == regNo);
+    }
+
 
     //BOOKINGS, VEHICLES, CUSTOMERS
     public async Task<IBooking> RentVehicle(int vehicleId, int customerId)
     {
-        if(SelectedCustomerId == 0) //Condition möts om ingen customer är vald och då är SelectedCustomerId = 0, vilket är default värdet.
+        if (SelectedCustomerId == 0) //Condition möts om ingen customer är vald och då är SelectedCustomerId = 0, vilket är default värdet.
         {
             Message = "Error! Please pick a customer.";
             return null;
@@ -90,21 +81,20 @@ public class BookingProcessor
         Delay = true; //Boolean som används som condition när vi vill gråa ut våra knappar i html med disabled
         await Task.Delay(5000); // Simulerar att vi hämtar data från ett API med 5s fördröjning
         Delay = false;
-        SelectedCustomerId = 0; //Nollställer efter lyckad renting
 
         return _db.RentVehicle(vehicleId, customerId);
     }
 
     public IBooking ReturnVehicle(int vehicleId, string distance)
     {
-        if(!int.TryParse(distance, out int dist))
+        if (!int.TryParse(distance, out int dist))
         {
             Message = "Error! Please enter the distance.";
             return null;
         }
 
         var vehicle = _db.Get<IVehicle>(v => v.Id == vehicleId).FirstOrDefault();
-        var booking = _db.Get<IBooking>(b => b.VehicleBooking.RegNo == vehicle.RegNo && b.EndRent == null).FirstOrDefault();
+        var booking = _db.Get<IBooking>(b => b.Vehicle.RegNo == vehicle.RegNo && b.EndRent == null).FirstOrDefault();
 
         if (vehicle == null || booking == null || booking.KmReturned.HasValue)
         {
@@ -140,8 +130,8 @@ public class BookingProcessor
 
             if (_db.Get<IVehicle>(v => v is Vehicle && (v as Vehicle).RegNo == RegistrationNumber).Any()) //Any är en Linq metod som kollar om RegNo redan existerar i listan. Den returnerar en boolean beroende på om kriterierna möts eller ej.
             {                                                                                             //Ingen specifik restriktion på RegNo för exempelvis längd då man kan ha custom registreringsnummer för fordon
-                Message = "Error! Registration Number already exists."; 
-                return; 
+                Message = "Error! Registration Number already exists.";
+                return;
             }
 
             var newVehicle = new Vehicle(
@@ -201,7 +191,7 @@ public class BookingProcessor
         {
             var newCustomer = new Customer(
                 _db.NextPersonId,
-                ssn, 
+                ssn,
                 LName,
                 FName
             );

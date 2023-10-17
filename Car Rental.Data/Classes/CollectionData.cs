@@ -20,18 +20,18 @@ public class CollectionData : IData
 
     public CollectionData() => SeedData();
 
-    void SeedData() //Sample data som finns redan vid start av webbapplikationen
+    void SeedData() //Sample data som finns redan vid start av webbapplikationen     
     {
-        IPerson person1 = new Customer(NextPersonId, 123456, "Nguyen", "Hao");
-        IPerson person2 = new Customer(NextPersonId, 654321, "Nygren", "Hans");
+        IPerson person1, person2;
+        IVehicle vehicle1, vehicle2, vehicle3, vehicle4;
 
-        IVehicle vehicle1 = new Car(NextVehicleId, "LOL777", "Saab", 50000, 2, VehicleTypes.Convertible, 200, (VehicleStatuses)2);
-        IVehicle vehicle2 = new Car(NextVehicleId, "HAO420", "Volvo", 20000, 1, VehicleTypes.Bus, 300, (VehicleStatuses)2);
-        IVehicle vehicle3 = new Car(NextVehicleId, "RIP666", "Wolkswagen", 10000, 1, VehicleTypes.Minivan, 500, (VehicleStatuses)1);
-        IVehicle vehicle4 = new Motorcycle(NextVehicleId, "COW999", "Yamaha", 5000, 3, VehicleTypes.Motorcycle, 50, (VehicleStatuses)2);
+        _persons.Add(person1 = new Customer(NextPersonId, 123456, "Nguyen", "Hao"));
+        _persons.Add(person2 = new Customer(NextPersonId, 654321, "Nygren", "Hans"));
 
-        _persons.AddRange(new IPerson[] { person1, person2 });
-        _vehicles.AddRange(new IVehicle[] { vehicle1, vehicle2, vehicle3, vehicle4 });
+        _vehicles.Add(vehicle1 = new Car(NextVehicleId, "LOL777", "Saab", 50000, 2, VehicleTypes.Convertible, 200, (VehicleStatuses)2));
+        _vehicles.Add(vehicle2 = new Car(NextVehicleId, "HAO420", "Volvo", 20000, 1, VehicleTypes.Bus, 300, (VehicleStatuses)2));
+        _vehicles.Add(vehicle3 = new Car(NextVehicleId, "RIP666", "Wolkswagen", 10000, 1, VehicleTypes.Minivan, 500, (VehicleStatuses)1));
+        _vehicles.Add(vehicle4 = new Motorcycle(NextVehicleId, "COW999", "Yamaha", 5000, 3, VehicleTypes.Motorcycle, 50, (VehicleStatuses)2));
 
         _bookings.Add(new Booking(NextBookingId, vehicle3, person1, 1000.0, null, DateTime.Today, null, (VehicleStatuses)2));
         _bookings.Add(new Booking(NextBookingId, vehicle1, person2, 4000.0, 4000.0, DateTime.Today.AddDays(-10), DateTime.Today, (VehicleStatuses)1));
@@ -96,7 +96,7 @@ public class CollectionData : IData
             NextBookingId,
             vehicle,
             customer,
-            2000.0, 
+            2000.0,
             null,
             DateTime.Now,
             null,
@@ -117,7 +117,7 @@ public class CollectionData : IData
             return null;
         }
 
-        var booking = _bookings.FirstOrDefault(b => b.VehicleBooking.RegNo == vehicle.RegNo && b.EndRent == null);
+        var booking = _bookings.FirstOrDefault(b => b.Vehicle.RegNo == vehicle.RegNo && b.EndRent == null);
 
         if (booking == null)
         {
