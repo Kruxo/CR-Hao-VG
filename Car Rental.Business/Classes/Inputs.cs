@@ -10,8 +10,8 @@ public class Inputs
     public bool Delay { get; set; }
     public bool Processing { get; set; }
     public string Message { get; set; }
-    public string Distance { get; set; }
-    public int SelectedCustomerId { get; set; }
+    public string Distance { get; set; } //Används för att nollställa input fields för distance
+    public int SelectedCustomerId { get; set; } //Används för html och felhantering när kund inte är vald 
 
     public Inputs()
     { 
