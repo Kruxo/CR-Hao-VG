@@ -1,5 +1,6 @@
 ﻿using Car_Rental.Common.Interfaces;
 using Car_Rental.Common.InputsClasses;
+using Car_Rental.Common.Classes;
 
 namespace Car_Rental.Business.Classes;
 
@@ -15,8 +16,8 @@ public class Inputs
 
     public Inputs()
     { 
-        VehicleInput = new DefaultVehicle();  
-        CustomerInput = new DefaultPerson();  
+        VehicleInput = new Vehicle();  
+        CustomerInput = new Customer();  
     }
 
 }

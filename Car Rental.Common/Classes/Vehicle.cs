@@ -26,4 +26,5 @@ public class Vehicle : IVehicle
         VStatus = vStatus;
     }
 
+    public Vehicle() { }
 }

@@ -16,4 +16,6 @@ public class Customer : IPerson
         LastName = lastName;
         FirstName = firstName;
     }
+
+    public Customer() { }
 }
