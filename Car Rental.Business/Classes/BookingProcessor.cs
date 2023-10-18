@@ -5,36 +5,20 @@ using Car_Rental.Common.Interfaces;
 using Car_Rental.Data.Classes;
 using Car_Rental.Data.Interfaces;
 using System;
+using System.Collections.Generic;
+using System.Net.NetworkInformation;
 using System.Reflection.Metadata.Ecma335;
 using System.Runtime.Intrinsics.X86;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Car_Rental.Business.Classes;
 
 public class BookingProcessor
 {
     private readonly IData _db;
+    public Inputs Inputs { get; } = new Inputs();
     public BookingProcessor(IData db) => _db = db; //Pratar med våran datalager genom BookingProcessor och på så sätt få tillgång till det som finns i CollectionData, men endast efter att vi har injektserat det i Program.cs
-
-    //RENT & RETURN VEHICLE
-    public string Make { get; set; }
-    public string RegistrationNumber { get; set; }
-    public double Odometer { get; set; }
-    public double CostKm { get; set; }
-    public string VehicleType { get; set; }
-
-    //CUSTOMER
-    public string SSN { get; set; }
-    public string LName { get; set; }
-    public string FName { get; set; }
-
-    //MISCELLANEOUS
-    public bool Delay { get; set; }
-    public bool Processing { get; set; }
-    public string Message { get; private set; }
-    public string Distance { get; set; }
-    public int SelectedCustomerId { get; set; }
-
-
+   
     //GET LISTS
     public IEnumerable<IBooking> GetBookings()
     {
@@ -72,15 +56,15 @@ public class BookingProcessor
     //BOOKINGS, VEHICLES, CUSTOMERS
     public async Task<IBooking> RentVehicle(int vehicleId, int customerId)
     {
-        if (SelectedCustomerId == 0) //Condition möts om ingen customer är vald och då är SelectedCustomerId = 0, vilket är default värdet.
+        if (Inputs.SelectedCustomerId == 0) //Condition möts om ingen customer är vald och då är SelectedCustomerId = 0, vilket är default värdet.
         {
-            Message = "Error! Please pick a customer.";
+            Inputs.Message = "Error! Please pick a customer.";
             return null;
         }
 
-        Delay = true; //Boolean som används som condition när vi vill gråa ut våra knappar i html med disabled
+        Inputs.Delay = true; //Boolean som används som condition när vi vill gråa ut våra knappar i html med disabled
         await Task.Delay(5000); // Simulerar att vi hämtar data från ett API med 5s fördröjning
-        Delay = false;
+        Inputs.Delay = false;
 
         return _db.RentVehicle(vehicleId, customerId);
     }
@@ -89,7 +73,7 @@ public class BookingProcessor
     {
         if (!int.TryParse(distance, out int dist))
         {
-            Message = "Error! Please enter the distance.";
+            Inputs.Message = "Error! Please enter the distance.";
             return null;
         }
 
@@ -109,38 +93,34 @@ public class BookingProcessor
         booking.Status = VehicleStatuses.Booked;
 
         //Nollställning 
-        Distance = string.Empty;
+        Inputs.Distance = string.Empty;
 
         return booking;
     }
 
     public void AddVehicle()
     {
+
         try
         {
-            if (string.IsNullOrEmpty(Make) || string.IsNullOrEmpty(RegistrationNumber) || string.IsNullOrEmpty(Odometer.ToString()) || string.IsNullOrEmpty(CostKm.ToString()))
+            if (string.IsNullOrEmpty(Inputs.VehicleInput.CarMake) || string.IsNullOrEmpty(Inputs.VehicleInput.RegNo) || string.IsNullOrEmpty(Inputs.VehicleInput.OdoMeter.ToString()) || string.IsNullOrEmpty(Inputs.VehicleInput.CostKm.ToString()))
             {
                 throw new InputException("Error! Please fill all input fields with a value.");
             }
 
-            if (string.IsNullOrEmpty(VehicleType))
-            {
-                VehicleType = VehicleTypes.Convertible.ToString(); //Default selected vtype i våran dropdown om inget är vald, programmet krascha innan då den trodde att det var null
-            }
-
-            if (_db.Get<IVehicle>(v => v is Vehicle && (v as Vehicle).RegNo == RegistrationNumber).Any()) //Any är en Linq metod som kollar om RegNo redan existerar i listan. Den returnerar en boolean beroende på om kriterierna möts eller ej.
-            {                                                                                             //Ingen specifik restriktion på RegNo för exempelvis längd då man kan ha custom registreringsnummer för fordon
-                Message = "Error! Registration Number already exists.";
+            if (_db.Get<IVehicle>(v => v is Vehicle && (v as Vehicle).RegNo == Inputs.VehicleInput.RegNo).Any()) //Any är en Linq metod som kollar om RegNo redan existerar i listan. Den returnerar en boolean beroende på om kriterierna möts eller ej.
+            {                                                                                                    //Ingen specifik restriktion på RegNo för exempelvis längd då man kan ha custom registreringsnummer för fordon
+                Inputs.Message = "Error! Registration Number already exists.";
                 return;
             }
 
             var newVehicle = new Vehicle(
                 _db.NextVehicleId,
-                RegistrationNumber,
-                Make,
-                (int)Odometer,
-                (int)CostKm,
-                Enum.Parse<VehicleTypes>(VehicleType),
+                Inputs.VehicleInput.RegNo,
+                Inputs.VehicleInput.CarMake,
+                (int)Inputs.VehicleInput.OdoMeter,
+                (int)Inputs.VehicleInput.CostKm,
+                Inputs.VehicleInput.VType,
                 100,
                 VehicleStatuses.Available
             );
@@ -148,42 +128,42 @@ public class BookingProcessor
             _db.Add(newVehicle as IVehicle);
 
             //Nollställning efter varje nytt försök
-            Make = string.Empty;
-            RegistrationNumber = string.Empty;
-            Odometer = 0;
-            CostKm = 0;
-            VehicleType = string.Empty;
-            Message = null;
+            Inputs.VehicleInput.CarMake = string.Empty;
+            Inputs.VehicleInput.RegNo = string.Empty;
+            Inputs.VehicleInput.OdoMeter = 0;
+            Inputs.VehicleInput.CostKm = 0;
+            Inputs.Message = null;
         }
         catch (InputException ex)
         {
-            Message = ex.Message;
+            Inputs.Message = ex.Message;
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error occurred at:: {ex.Message}"); //Simulerar loggning så vi ser vart felet är ifall våran InputException inte skulle catcha felet.
-            Message = "Error! Couldn't add a new vehicle";
+            Inputs.Message = "Error! Couldn't add a new vehicle";
         }
     }
 
     public void AddCustomer()
     {
-
-        if (string.IsNullOrEmpty(LName) || string.IsNullOrEmpty(FName))
+        if (string.IsNullOrEmpty(Inputs.CustomerInput.LastName) || string.IsNullOrEmpty(Inputs.CustomerInput.FirstName))
         {
-            Message = "Error! Please enter Last Name and First Name.";
+            Inputs.Message = "Error! Please enter Last Name and First Name.";
             return;
         }
 
-        if (string.IsNullOrEmpty(SSN) || SSN.Length != 6 || !int.TryParse(SSN, out int ssn)) //TryParse för att konvertera SSN till en int. Detta för att input fältet ska kunna visa sin placeholder då en public int SSN skulle ha default värdet 0 redan från start. 
+        string ssn = Inputs.CustomerInput.SocialSecurityNumber;
+
+        if (string.IsNullOrEmpty(ssn) || ssn.Length != 6)
         {
-            Message = "Error! SSN must have exactly 6 digits.";
+            Inputs.Message = "Error! SSN must have exactly 6 digits.";
             return;
         }
 
-        if (_db.Get<IPerson>(p => p is Customer && (p as Customer).SocialSecurityNumber == ssn).Any()) //Any är en Linq metod som kollar om SSN redan existerar i Customer listan. Den returnerar en boolean beroende på om kriterierna möts eller ej.
+        if (_db.Get<IPerson>(p => p is Customer && (p as Customer).SocialSecurityNumber == ssn).Any()) // Any är en Linq metod som kollar om SSN redan existerar i Customer listan.Den returnerar en boolean beroende på om kriterierna möts eller ej.
         {
-            Message = "Error! SSN already exists.";
+            Inputs.Message = "Error! SSN already exists.";
             return;
         }
 
@@ -192,23 +172,23 @@ public class BookingProcessor
             var newCustomer = new Customer(
                 _db.NextPersonId,
                 ssn,
-                LName,
-                FName
+                Inputs.CustomerInput.LastName,
+                Inputs.CustomerInput.FirstName
             );
 
             _db.Add(newCustomer as IPerson);
 
             //Nollställning 
-            SSN = string.Empty;
-            LName = string.Empty;
-            FName = string.Empty;
-            Message = null;
+            Inputs.CustomerInput.SocialSecurityNumber = string.Empty;
+            Inputs.CustomerInput.LastName = string.Empty;
+            Inputs.CustomerInput.FirstName = string.Empty;
+            Inputs.Message = null;
         }
 
         catch (Exception ex)
         {
             Console.WriteLine($"Error occurred at: {ex.Message}");
-            Message = "Error! Couldn't add a new customer";
+            Inputs.Message = "Error! Couldn't add a new customer";
         }
     }
 

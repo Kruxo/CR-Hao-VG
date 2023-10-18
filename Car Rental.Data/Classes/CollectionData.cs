@@ -25,8 +25,8 @@ public class CollectionData : IData
         IPerson person1, person2;
         IVehicle vehicle1, vehicle2, vehicle3, vehicle4;
 
-        _persons.Add(person1 = new Customer(NextPersonId, 123456, "Nguyen", "Hao"));
-        _persons.Add(person2 = new Customer(NextPersonId, 654321, "Nygren", "Hans"));
+        _persons.Add(person1 = new Customer(NextPersonId, "123456", "Nguyen", "Hao"));
+        _persons.Add(person2 = new Customer(NextPersonId, "654321", "Nygren", "Hans"));
 
         _vehicles.Add(vehicle1 = new Car(NextVehicleId, "LOL777", "Saab", 50000, 2, VehicleTypes.Convertible, 200, (VehicleStatuses)2));
         _vehicles.Add(vehicle2 = new Car(NextVehicleId, "HAO420", "Volvo", 20000, 1, VehicleTypes.Bus, 300, (VehicleStatuses)2));
